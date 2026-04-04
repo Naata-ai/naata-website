@@ -9,6 +9,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--deep:#3B2F1E;--brown:#6B4F36;--warm:#A67B5B;--sand:#C4A77D;--linen:#E8D5B7;--cream:#F5EDE0;--bg:#FAF6F0;--terra:#C2714F;--sage:#7A8B5C;--ochre:#D4903E;--white:#FFFFFF}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);overflow-x:hidden}
+.v2-hidden{display:none!important}
 
 /* ===== HERO ===== */
 .hero{min-height:100vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#1E1612}
@@ -168,7 +169,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 
 <!-- NAV -->
 <nav class="nav" id="nav">
-  <a href="#" class="nav-logo"><img src="logo-naata.png" alt="naata"><span>naata.ai</span></a>
+  <a href="#" class="nav-logo"><img src="naata-app-icon.png" alt="naata"><span>naata.ai</span></a>
   <div class="nav-links">
     <a href="#spaces">How It Works</a>
     <a href="#features">Features</a>
@@ -228,8 +229,8 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
   </div>
 </section>
 
-<!-- TODO: Re-enable for v2
-<section class="problem">
+<!-- SECTIONS HIDDEN FOR V1 — remove .v2-hidden style to re-enable -->
+<section class="problem v2-hidden">
   <div class="section">
     <div class="reveal">
       <div class="section-label" style="color:var(--sand)">The Problem</div>
@@ -247,7 +248,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 </section>
 
 <!-- THREE SPACES -->
-<section class="section" id="spaces">
+<section class="section v2-hidden" id="spaces">
   <div class="reveal">
     <div class="section-label">How It Works</div>
     <div class="section-title">Three Spaces, One Bond</div>
@@ -262,7 +263,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 </section>
 
 <!-- FEATURES -->
-<section class="section" id="features" style="background:var(--cream);border-radius:40px;margin:0 16px;max-width:none;padding:100px 40px">
+<section class="section v2-hidden" id="features" style="background:var(--cream);border-radius:40px;margin:0 16px;max-width:none;padding:100px 40px">
   <div style="max-width:1400px;margin:0 auto">
     <div class="reveal">
       <div class="section-label">Features</div>
@@ -283,7 +284,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 </section>
 
 <!-- INDIA -->
-<section class="india" id="india">
+<section class="india v2-hidden" id="india">
   <div class="section" style="padding:0;max-width:1400px;margin:0 auto">
     <div class="reveal">
       <div class="section-label" style="color:rgba(245,237,224,.5)">Rooted in India</div>
@@ -303,7 +304,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 </section>
 
 <!-- PRIVACY -->
-<section class="section" id="privacy">
+<section class="section v2-hidden" id="privacy">
   <div class="reveal">
     <div class="section-label">Privacy</div>
     <div class="section-title">Your Words Are Sacred</div>
@@ -322,7 +323,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 </section>
 
 <!-- OUR STORY -->
-<section class="section" style="padding-top:60px;padding-bottom:60px">
+<section class="section v2-hidden" style="padding-top:60px;padding-bottom:60px">
   <div class="reveal">
     <div class="section-label">Our Story</div>
     <div class="section-title">We Built This for Us First</div>
@@ -344,7 +345,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 </section>
 
 <!-- SAFETY NOTE -->
-<section style="max-width:800px;margin:0 auto;padding:0 24px 40px;text-align:center">
+<section class="v2-hidden" style="max-width:800px;margin:0 auto;padding:0 24px 40px;text-align:center">
   <div style="padding:20px 24px;border-radius:16px;background:var(--cream);border:1px solid var(--linen)">
     <div style="font-family:'Outfit',sans-serif;font-size:12px;color:var(--warm);line-height:1.7">
       <strong>Safety first:</strong> If you or your partner are experiencing a mental health crisis or domestic violence, please reach out to a helpline — Kiran (1800-599-0019), iCall (9152987821), or Tele-MANAS (14416). Your safety always comes first.
@@ -353,7 +354,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 </section>
 
 <!-- WAITLIST -->
-<section class="section" id="waitlist" style="text-align:center">
+<section class="section v2-hidden" id="waitlist" style="text-align:center">
   <div class="reveal">
     <div class="section-label">Coming Soon</div>
     <div class="section-title">Be the First to Experience naata</div>
@@ -395,7 +396,6 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
     </div>
   </div>
 </section>
--->
 
 <!-- FOOTER -->
 <footer class="footer">
