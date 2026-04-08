@@ -18,12 +18,14 @@ p{color:#6B4F36;font-size:14px;line-height:1.6;margin-bottom:24px}
 </style>
 <script>
 (function() {
-  // Grab the full fragment (everything after #)
+  // Supabase puts tokens in the hash fragment: #access_token=...&type=recovery
+  // Android custom scheme deep links lose hash fragments, so convert to query params
   var hash = window.location.hash;
   if (!hash) return;
 
-  // Build the deep link URL: scheme + path + fragment
-  var deepLink = 'com.naataai.naata://reset-callback' + hash;
+  // Remove the leading # and convert to query string
+  var params = hash.substring(1);
+  var deepLink = 'com.naataai.naata://reset-callback?' + params;
 
   // Try to open the app automatically
   window.location.href = deepLink;
@@ -32,16 +34,16 @@ p{color:#6B4F36;font-size:14px;line-height:1.6;margin-bottom:24px}
 </head>
 <body>
 <div class="card">
-  <div class="heart">♥</div>
+  <div class="heart">&#9829;</div>
   <h1>Reset Your Password</h1>
   <p>Tap the button below to open Naata and set your new password.</p>
   <a id="open-app" class="btn" href="#">Open Naata</a>
   <p class="fallback">If the app doesn't open, make sure Naata is installed on this device.</p>
 </div>
 <script>
-// Set the button href with the fragment
 var hash = window.location.hash || '';
-document.getElementById('open-app').href = 'com.naataai.naata://reset-callback' + hash;
+var params = hash.substring(1);
+document.getElementById('open-app').href = 'com.naataai.naata://reset-callback?' + params;
 </script>
 </body>
 </html>
