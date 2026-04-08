@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naata — Reset Password</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#FAF6F0;font-family:'Outfit',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.card{text-align:center;max-width:400px}
+.heart{color:#C2714F;font-size:32px;margin-bottom:8px}
+h1{font-family:'DM Serif Display',serif;color:#3B2F1E;font-size:24px;margin-bottom:8px}
+p{color:#6B4F36;font-size:14px;line-height:1.6;margin-bottom:24px}
+.btn{display:inline-block;background:#C2714F;color:#FAF6F0;padding:16px 48px;border-radius:16px;text-decoration:none;font-weight:600;font-size:16px}
+.btn:hover{opacity:0.9}
+.fallback{margin-top:16px;font-size:12px;color:#A67B5B}
+</style>
+<script>
+(function() {
+  // Grab the full fragment (everything after #)
+  var hash = window.location.hash;
+  if (!hash) return;
+
+  // Build the deep link URL: scheme + path + fragment
+  var deepLink = 'com.naataai.naata://reset-callback' + hash;
+
+  // Try to open the app automatically
+  window.location.href = deepLink;
+})();
+</script>
+</head>
+<body>
+<div class="card">
+  <div class="heart">♥</div>
+  <h1>Reset Your Password</h1>
+  <p>Tap the button below to open Naata and set your new password.</p>
+  <a id="open-app" class="btn" href="#">Open Naata</a>
+  <p class="fallback">If the app doesn't open, make sure Naata is installed on this device.</p>
+</div>
+<script>
+// Set the button href with the fragment
+var hash = window.location.hash || '';
+document.getElementById('open-app').href = 'com.naataai.naata://reset-callback' + hash;
+</script>
+</body>
+</html>
