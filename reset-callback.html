@@ -60,32 +60,60 @@ input:focus{border-color:#C2714F}
 var SUPABASE_URL = 'https://utiuztuzphguiaihpucl.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0aXV6dHV6cGhndWlhaWhwdWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMTU5MDAsImV4cCI6MjA4ODc5MTkwMH0.5ppwsMqsQkRYHIkD0ySO0t5v-0kL5UNcaInYZDJ7Zog';
 
-var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Use PKCE flow to match Supabase's default
+var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { flowType: 'pkce', detectSessionInUrl: false }
+});
 
-// Parse tokens from hash fragment
+function showExpired(reason) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('expired').style.display = 'block';
+  if (reason) console.error('Reset link error:', reason);
+}
+
+function showForm() {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('form').style.display = 'block';
+}
+
+// Try PKCE flow first (code in query params)
+var urlParams = new URLSearchParams(window.location.search);
+var code = urlParams.get('code');
+var errorParam = urlParams.get('error') || urlParams.get('error_description');
+
+// Fallback: parse hash fragment for legacy implicit flow
 var hash = window.location.hash.substring(1);
-var params = new URLSearchParams(hash);
-var accessToken = params.get('access_token');
-var refreshToken = params.get('refresh_token');
-var type = params.get('type');
+var hashParams = new URLSearchParams(hash);
+var accessToken = hashParams.get('access_token');
+var refreshToken = hashParams.get('refresh_token');
+var type = hashParams.get('type');
+var hashError = hashParams.get('error') || hashParams.get('error_description');
 
-if (accessToken && type === 'recovery') {
-  // Set the session with the recovery tokens
+if (errorParam || hashError) {
+  showExpired(errorParam || hashError);
+} else if (code) {
+  // PKCE flow
+  supabase.auth.exchangeCodeForSession(code).then(function(result) {
+    if (result.error) {
+      showExpired(result.error.message);
+    } else {
+      showForm();
+    }
+  });
+} else if (accessToken && type === 'recovery') {
+  // Legacy implicit flow
   supabase.auth.setSession({
     access_token: accessToken,
     refresh_token: refreshToken
   }).then(function(result) {
     if (result.error) {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('expired').style.display = 'block';
+      showExpired(result.error.message);
     } else {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('form').style.display = 'block';
+      showForm();
     }
   });
 } else {
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('expired').style.display = 'block';
+  showExpired('No auth code or token in URL');
 }
 
 function updatePassword() {
