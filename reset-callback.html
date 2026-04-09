@@ -8,42 +8,120 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#FAF6F0;font-family:'Outfit',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
-.card{text-align:center;max-width:400px}
+.card{text-align:center;max-width:400px;width:100%}
 .heart{color:#C2714F;font-size:32px;margin-bottom:8px}
 h1{font-family:'DM Serif Display',serif;color:#3B2F1E;font-size:24px;margin-bottom:8px}
-p{color:#6B4F36;font-size:14px;line-height:1.6;margin-bottom:24px}
-.btn{display:inline-block;background:#C2714F;color:#FAF6F0;padding:16px 48px;border-radius:16px;text-decoration:none;font-weight:600;font-size:16px}
+p{color:#6B4F36;font-size:14px;line-height:1.6;margin-bottom:20px}
+label{display:block;text-align:left;font-size:12px;font-weight:600;color:#6B4F36;letter-spacing:2px;margin-bottom:8px}
+input{width:100%;padding:14px 16px;border:1.5px solid #E8D5B7;border-radius:12px;font-family:'Outfit',sans-serif;font-size:15px;color:#3B2F1E;background:#fff;outline:none;margin-bottom:16px}
+input:focus{border-color:#C2714F}
+.btn{display:block;width:100%;background:#C2714F;color:#FAF6F0;padding:16px;border-radius:16px;border:none;font-family:'Outfit',sans-serif;font-weight:600;font-size:16px;cursor:pointer}
 .btn:hover{opacity:0.9}
-.fallback{margin-top:16px;font-size:12px;color:#A67B5B}
+.btn:disabled{opacity:0.6;cursor:not-allowed}
+.error{color:#D32F2F;font-size:13px;margin-bottom:12px;text-align:left}
+.success-icon{color:#7A8B5C;font-size:56px;margin-bottom:16px}
+.requirements{text-align:left;font-size:12px;color:#A67B5B;margin-bottom:16px;line-height:1.8}
 </style>
-<script>
-(function() {
-  // Supabase puts tokens in the hash fragment: #access_token=...&type=recovery
-  // Android custom scheme deep links lose hash fragments, so convert to query params
-  var hash = window.location.hash;
-  if (!hash) return;
-
-  // Remove the leading # and convert to query string
-  var params = hash.substring(1);
-  var deepLink = 'com.naataai.naata://reset-callback?' + params;
-
-  // Try to open the app automatically
-  window.location.href = deepLink;
-})();
-</script>
 </head>
 <body>
-<div class="card">
+<div class="card" id="loading">
   <div class="heart">&#9829;</div>
-  <h1>Reset Your Password</h1>
-  <p>Tap the button below to open Naata and set your new password.</p>
-  <a id="open-app" class="btn" href="#">Open Naata</a>
-  <p class="fallback">If the app doesn't open, make sure Naata is installed on this device.</p>
+  <h1>Loading...</h1>
+  <p>Setting up your password reset...</p>
 </div>
+
+<div class="card" id="form" style="display:none">
+  <div class="heart">&#9829;</div>
+  <h1>Set New Password</h1>
+  <p>Choose a strong password for your Naata account.</p>
+  <div id="error" class="error" style="display:none"></div>
+  <label>NEW PASSWORD</label>
+  <input type="password" id="password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;">
+  <div class="requirements">Min 8 characters, 1 uppercase letter, 1 number</div>
+  <label>CONFIRM PASSWORD</label>
+  <input type="password" id="confirm" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;">
+  <button class="btn" id="submit" onclick="updatePassword()">Update Password</button>
+</div>
+
+<div class="card" id="success" style="display:none">
+  <div class="success-icon">&#10003;</div>
+  <h1>Password Updated!</h1>
+  <p>Your password has been changed. Open the Naata app and log in with your new password.</p>
+</div>
+
+<div class="card" id="expired" style="display:none">
+  <div class="heart">&#9829;</div>
+  <h1>Link Expired</h1>
+  <p>This reset link has expired or is invalid. Please request a new one from the Naata app.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-var hash = window.location.hash || '';
-var params = hash.substring(1);
-document.getElementById('open-app').href = 'com.naataai.naata://reset-callback?' + params;
+var SUPABASE_URL = 'https://utiuztuzphguiaihpucl.supabase.co';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0aXV6dHV6cGhndWlhaWhwdWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMTU5MDAsImV4cCI6MjA4ODc5MTkwMH0.5ppwsMqsQkRYHIkD0ySO0t5v-0kL5UNcaInYZDJ7Zog';
+
+var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Parse tokens from hash fragment
+var hash = window.location.hash.substring(1);
+var params = new URLSearchParams(hash);
+var accessToken = params.get('access_token');
+var refreshToken = params.get('refresh_token');
+var type = params.get('type');
+
+if (accessToken && type === 'recovery') {
+  // Set the session with the recovery tokens
+  supabase.auth.setSession({
+    access_token: accessToken,
+    refresh_token: refreshToken
+  }).then(function(result) {
+    if (result.error) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('expired').style.display = 'block';
+    } else {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('form').style.display = 'block';
+    }
+  });
+} else {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('expired').style.display = 'block';
+}
+
+function updatePassword() {
+  var password = document.getElementById('password').value;
+  var confirm = document.getElementById('confirm').value;
+  var errorEl = document.getElementById('error');
+  var btn = document.getElementById('submit');
+
+  errorEl.style.display = 'none';
+
+  if (!password) { showError('Please enter a new password'); return; }
+  if (password.length < 8) { showError('Password must be at least 8 characters'); return; }
+  if (!/[A-Z]/.test(password)) { showError('Password must contain at least one uppercase letter'); return; }
+  if (!/[0-9]/.test(password)) { showError('Password must contain at least one number'); return; }
+  if (password !== confirm) { showError('Passwords do not match'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Updating...';
+
+  supabase.auth.updateUser({ password: password }).then(function(result) {
+    if (result.error) {
+      showError('Failed to update password: ' + result.error.message);
+      btn.disabled = false;
+      btn.textContent = 'Update Password';
+    } else {
+      document.getElementById('form').style.display = 'none';
+      document.getElementById('success').style.display = 'block';
+    }
+  });
+}
+
+function showError(msg) {
+  var el = document.getElementById('error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
 </script>
 </body>
 </html>
