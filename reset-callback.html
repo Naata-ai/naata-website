@@ -53,7 +53,6 @@ input:focus{border-color:#C2714F}
   <div class="heart">&#9829;</div>
   <h1>Link Expired</h1>
   <p>This reset link has expired or is invalid. Please request a new one from the Naata app.</p>
-  <p style="font-size:11px;color:#999;word-break:break-all;text-align:left" id="debug"></p>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -69,9 +68,6 @@ var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 function showExpired(reason) {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('expired').style.display = 'block';
-  var debugInfo = 'Debug: ' + (reason || 'unknown');
-  debugInfo += '\nURL: ' + window.location.href;
-  document.getElementById('debug').textContent = debugInfo;
   if (reason) console.error('Reset link error:', reason);
 }
 
@@ -80,12 +76,7 @@ function showForm() {
   document.getElementById('form').style.display = 'block';
 }
 
-// Try PKCE flow first (code in query params)
-var urlParams = new URLSearchParams(window.location.search);
-var code = urlParams.get('code');
-var errorParam = urlParams.get('error') || urlParams.get('error_description');
-
-// Fallback: parse hash fragment for legacy implicit flow
+// Parse tokens from hash fragment (Supabase implicit flow)
 var hash = window.location.hash.substring(1);
 var hashParams = new URLSearchParams(hash);
 var accessToken = hashParams.get('access_token');
@@ -93,19 +84,9 @@ var refreshToken = hashParams.get('refresh_token');
 var type = hashParams.get('type');
 var hashError = hashParams.get('error') || hashParams.get('error_description');
 
-if (errorParam || hashError) {
-  showExpired(errorParam || hashError);
-} else if (code) {
-  // PKCE flow
-  supabase.auth.exchangeCodeForSession(code).then(function(result) {
-    if (result.error) {
-      showExpired(result.error.message);
-    } else {
-      showForm();
-    }
-  });
+if (hashError) {
+  showExpired(hashError);
 } else if (accessToken && type === 'recovery') {
-  // Legacy implicit flow
   supabase.auth.setSession({
     access_token: accessToken,
     refresh_token: refreshToken
