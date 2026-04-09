@@ -53,6 +53,7 @@ input:focus{border-color:#C2714F}
   <div class="heart">&#9829;</div>
   <h1>Link Expired</h1>
   <p>This reset link has expired or is invalid. Please request a new one from the Naata app.</p>
+  <p style="font-size:11px;color:#999;word-break:break-all;text-align:left" id="debug"></p>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -68,6 +69,9 @@ var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 function showExpired(reason) {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('expired').style.display = 'block';
+  var debugInfo = 'Debug: ' + (reason || 'unknown');
+  debugInfo += '\nURL: ' + window.location.href;
+  document.getElementById('debug').textContent = debugInfo;
   if (reason) console.error('Reset link error:', reason);
 }
 
