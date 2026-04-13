@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>naata.ai — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#FAF6F0;font-family:'Outfit',sans-serif;color:#3B2F1E;padding:24px;max-width:900px;margin:0 auto}
+h1{font-family:'DM Serif Display',serif;font-size:28px;color:#3B2F1E;margin-bottom:4px}
+.subtitle{font-size:13px;color:#A67B5B;margin-bottom:24px}
+.login-box{max-width:400px;margin:100px auto;text-align:center}
+.login-box h1{margin-bottom:16px}
+input[type=password]{width:100%;padding:14px 16px;border:1.5px solid #E8D5B7;border-radius:12px;font-family:'Outfit';font-size:15px;outline:none;margin-bottom:16px}
+input:focus{border-color:#C2714F}
+.btn{background:#C2714F;color:#F5EDE0;border:none;padding:14px 32px;border-radius:12px;font-family:'Outfit';font-weight:600;font-size:15px;cursor:pointer;width:100%}
+.btn:hover{opacity:0.9}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+.card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(59,47,30,0.06)}
+.card-label{font-size:12px;color:#A67B5B;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.card-value{font-size:32px;font-weight:700;color:#3B2F1E}
+.card-sub{font-size:12px;color:#A67B5B;margin-top:2px}
+.section{margin-bottom:28px}
+.section-title{font-family:'DM Serif Display',serif;font-size:20px;color:#3B2F1E;margin-bottom:12px}
+table{width:100%;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(59,47,30,0.06)}
+th{background:#F5EDE0;text-align:left;padding:10px 16px;font-size:12px;color:#A67B5B;text-transform:uppercase;letter-spacing:1px}
+td{padding:10px 16px;font-size:14px;border-top:1px solid #F5EDE0}
+.bar{height:24px;background:#C2714F;border-radius:4px;min-width:4px;transition:width 0.5s}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.bar-label{font-size:12px;color:#6B4F36;min-width:70px}
+.bar-count{font-size:12px;color:#A67B5B}
+.loading{text-align:center;padding:60px;color:#A67B5B}
+.error{color:#D32F2F;text-align:center;padding:20px}
+.badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:600}
+.badge-green{background:#7A8B5C20;color:#7A8B5C}
+.badge-orange{background:#D4903E20;color:#D4903E}
+.badge-red{background:#C2714F20;color:#C2714F}
+.refresh-btn{background:none;border:1px solid #E8D5B7;padding:8px 16px;border-radius:8px;font-family:'Outfit';font-size:13px;color:#6B4F36;cursor:pointer;float:right}
+.refresh-btn:hover{background:#F5EDE0}
+</style>
+</head>
+<body>
+
+<div id="login" class="login-box">
+  <h1>naata.ai</h1>
+  <p class="subtitle">Admin Dashboard</p>
+  <input type="password" id="admin-key" placeholder="Enter admin key">
+  <button class="btn" onclick="login()">Sign In</button>
+  <p id="login-error" class="error" style="display:none">Invalid key</p>
+</div>
+
+<div id="dashboard" style="display:none">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+    <div>
+      <h1>naata.ai Dashboard</h1>
+      <p class="subtitle" id="generated-at"></p>
+    </div>
+    <button class="refresh-btn" onclick="loadData()">Refresh</button>
+  </div>
+
+  <!-- Key Metrics -->
+  <div class="grid">
+    <div class="card">
+      <div class="card-label">Total Users</div>
+      <div class="card-value" id="total-users">-</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Paired Couples</div>
+      <div class="card-value" id="total-couples">-</div>
+    </div>
+    <div class="card">
+      <div class="card-label">DAU</div>
+      <div class="card-value" id="dau">-</div>
+      <div class="card-sub" id="dau-change"></div>
+    </div>
+    <div class="card">
+      <div class="card-label">WAU</div>
+      <div class="card-value" id="wau">-</div>
+    </div>
+    <div class="card">
+      <div class="card-label">MAU</div>
+      <div class="card-value" id="mau">-</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Signups Today</div>
+      <div class="card-value" id="signups-today">-</div>
+    </div>
+  </div>
+
+  <!-- Engagement -->
+  <div class="section">
+    <div class="section-title">Engagement</div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-label">Total Messages</div>
+        <div class="card-value" id="total-messages">-</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Total Sessions</div>
+        <div class="card-value" id="total-sessions">-</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Bridge Sessions</div>
+        <div class="card-value" id="bridge-sessions">-</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signups Chart -->
+  <div class="section">
+    <div class="section-title">Signups (Last 7 Days)</div>
+    <div id="signups-chart" class="card"></div>
+  </div>
+
+  <!-- Retention -->
+  <div class="section">
+    <div class="section-title">Retention</div>
+    <table>
+      <tr><th>Metric</th><th>Cohort</th><th>Returned</th><th>Rate</th></tr>
+      <tr id="ret-d1"><td>Day 1</td><td>-</td><td>-</td><td>-</td></tr>
+      <tr id="ret-d7"><td>Day 7</td><td>-</td><td>-</td><td>-</td></tr>
+      <tr id="ret-d30"><td>Day 30</td><td>-</td><td>-</td><td>-</td></tr>
+    </table>
+  </div>
+</div>
+
+<script>
+var API_BASE = 'https://naata-backend-483381158187.asia-south1.run.app';
+var adminKey = '';
+
+function login() {
+  adminKey = document.getElementById('admin-key').value;
+  document.getElementById('login-error').style.display = 'none';
+  loadData();
+}
+
+function loadData() {
+  fetch(API_BASE + '/api/admin/analytics', {
+    headers: { 'X-Admin-Key': adminKey }
+  })
+  .then(r => {
+    if (r.status === 403) {
+      document.getElementById('login-error').style.display = 'block';
+      throw new Error('Unauthorized');
+    }
+    return r.json();
+  })
+  .then(data => {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+
+    var d = new Date(data.generated_at);
+    document.getElementById('generated-at').textContent = 'Last updated: ' + d.toLocaleString();
+
+    // Users
+    document.getElementById('total-users').textContent = data.users.total;
+    document.getElementById('total-couples').textContent = data.users.total_couples;
+    document.getElementById('signups-today').textContent = data.users.signups_today;
+
+    // Engagement
+    document.getElementById('dau').textContent = data.engagement.dau;
+    var dauDiff = data.engagement.dau - data.engagement.dau_yesterday;
+    var dauEl = document.getElementById('dau-change');
+    if (dauDiff > 0) dauEl.textContent = '+' + dauDiff + ' vs yesterday';
+    else if (dauDiff < 0) dauEl.textContent = dauDiff + ' vs yesterday';
+    else dauEl.textContent = 'same as yesterday';
+
+    document.getElementById('wau').textContent = data.engagement.wau;
+    document.getElementById('mau').textContent = data.engagement.mau;
+    document.getElementById('total-messages').textContent = data.engagement.total_messages;
+    document.getElementById('total-sessions').textContent = data.engagement.total_sessions;
+    document.getElementById('bridge-sessions').textContent = data.engagement.bridge_sessions;
+
+    // Signups chart
+    var maxSignups = Math.max(1, ...data.users.signups_daily.map(s => s.count));
+    var chartHtml = '';
+    data.users.signups_daily.reverse().forEach(function(s) {
+      var width = Math.round(s.count / maxSignups * 100);
+      var day = new Date(s.date).toLocaleDateString('en-IN', {weekday:'short', day:'numeric'});
+      chartHtml += '<div class="bar-row"><span class="bar-label">' + day + '</span><div class="bar" style="width:' + width + '%"></div><span class="bar-count">' + s.count + '</span></div>';
+    });
+    document.getElementById('signups-chart').innerHTML = chartHtml;
+
+    // Retention
+    ['d1','d7','d30'].forEach(function(key) {
+      var r = data.retention[key];
+      var row = document.getElementById('ret-' + key);
+      var badge = r.rate >= 50 ? 'badge-green' : r.rate >= 25 ? 'badge-orange' : 'badge-red';
+      row.innerHTML = '<td>' + key.toUpperCase().replace('D','Day ') + '</td><td>' + r.cohort_size + '</td><td>' + r.returned + '</td><td><span class="badge ' + badge + '">' + r.rate + '%</span></td>';
+    });
+  })
+  .catch(function(e) {
+    if (e.message !== 'Unauthorized') {
+      document.getElementById('login-error').textContent = 'Error loading data: ' + e.message;
+      document.getElementById('login-error').style.display = 'block';
+    }
+  });
+}
+
+// Auto-login if key in URL hash
+if (window.location.hash) {
+  adminKey = window.location.hash.substring(1);
+  loadData();
+}
+</script>
+</body>
+</html>
