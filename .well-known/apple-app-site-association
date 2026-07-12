@@ -1,0 +1,20 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": ["R4L3869G54.com.naataai.naata"],
+        "components": [
+          {
+            "/": "/pair",
+            "comment": "Root pair route — no query needed"
+          },
+          {
+            "/": "/pair*",
+            "comment": "Any /pair path including /pair?code=NAATA-XXXX"
+          }
+        ]
+      }
+    ]
+  }
+}
