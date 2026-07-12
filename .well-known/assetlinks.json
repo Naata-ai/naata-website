@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.naataai.naata",
+      "sha256_cert_fingerprints": [
+        "9B:40:E5:0D:6C:E8:E5:F8:2C:1D:69:C4:06:7B:7B:F0:1A:DF:A7:86:41:56:37:54:2C:84:D7:7B:10:7F:B5:BA"
+      ]
+    }
+  }
+]
