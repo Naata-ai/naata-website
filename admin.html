@@ -43,7 +43,18 @@
   .btn{padding:8px 14px;border:1px solid var(--line);background:var(--card);border-radius:10px;
     font-size:13px;cursor:pointer;color:var(--ink)}
   .btn:hover{background:#fff}
-  .updated{color:var(--muted);font-size:12px;margin:2px 0 18px}
+  .updated{color:var(--muted);font-size:12px;margin:2px 0 12px}
+
+  /* Date range bar */
+  .rangebar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:8px 12px;margin-bottom:20px}
+  .rblabel{font-size:12px;color:var(--muted);margin-right:2px;font-weight:600}
+  .chip{padding:5px 12px;border:1px solid var(--line);background:#fff;border-radius:8px;font-size:12px;cursor:pointer;color:var(--ink)}
+  .chip:hover{background:var(--cream)}
+  .chip.active{background:var(--terracotta);color:#fff;border-color:var(--terracotta)}
+  .rbsep,.rbdash{color:var(--muted);font-size:12px}
+  .rangebar input[type=date]{padding:5px 8px;border:1px solid var(--line);border-radius:8px;font-size:12px;background:#fff;color:var(--ink)}
+  .period-label{color:var(--terracotta);font-weight:700;text-transform:none;letter-spacing:0}
 
   .section{margin:26px 0 8px}
   .section h2{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
@@ -126,11 +137,26 @@
       </div>
     </div>
     <div class="actions">
+      <button class="btn" onclick="exportCSV()">⤓ CSV</button>
       <button class="btn" onclick="load()">↻ Refresh</button>
       <button class="btn" onclick="logout()">Log out</button>
     </div>
   </header>
   <div class="updated" id="updated"></div>
+
+  <!-- Date range controls -->
+  <div class="rangebar" id="rangebar">
+    <span class="rblabel">Period:</span>
+    <button class="chip" data-days="7" onclick="setPreset(7)">7d</button>
+    <button class="chip active" data-days="30" onclick="setPreset(30)">30d</button>
+    <button class="chip" data-days="90" onclick="setPreset(90)">90d</button>
+    <button class="chip" data-days="365" onclick="setPreset(365)">1y</button>
+    <button class="chip" data-days="all" onclick="setPreset('all')">All</button>
+    <span class="rbsep">·</span>
+    <input type="date" id="startDate" onchange="customRange()" />
+    <span class="rbdash">→</span>
+    <input type="date" id="endDate" onchange="customRange()" />
+  </div>
 
   <div id="loading" style="padding:40px;text-align:center;color:var(--muted)">
     <span class="spin"></span> Loading live data…
@@ -146,13 +172,29 @@
     <div class="section"><h2>Active users</h2></div>
     <div class="kpis" id="activeKpis"></div>
 
-    <!-- Growth -->
-    <div class="section"><h2>Growth</h2></div>
+    <!-- This period (date-range driven) -->
+    <div class="section"><h2>This period · <span class="period-label" id="periodLabel"></span></h2></div>
+    <div class="kpis" id="periodKpis"></div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card"><h3>New signups / day</h3><p class="desc" id="pUsersDesc"></p><div class="chart-box"><canvas id="pUsers"></canvas></div></div>
+      <div class="card"><h3>Sessions / day</h3><p class="desc" id="pSessDesc"></p><div class="chart-box"><canvas id="pSess"></canvas></div></div>
+      <div class="card"><h3>Messages / day</h3><p class="desc" id="pMsgDesc"></p><div class="chart-box"><canvas id="pMsg"></canvas></div></div>
+    </div>
+
+    <!-- Store installs -->
+    <div class="section"><h2>Store installs</h2></div>
+    <div class="kpis" id="storeKpis"></div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card"><h3>Device installs by platform</h3><p class="desc">Real devices that opened the app &amp; registered for push</p><div class="chart-box"><canvas id="devPlatform"></canvas></div></div>
+      <div class="card"><h3>Accounts by platform</h3><p class="desc">Distinct signed-in accounts per platform</p><div class="chart-box"><canvas id="acctPlatform"></canvas></div></div>
+    </div>
+    <div class="card" id="storeNote" style="margin-top:16px"></div>
+
+    <!-- Growth (all-time) -->
+    <div class="section"><h2>Growth · all time</h2></div>
     <div class="grid g2">
       <div class="card"><h3>Cumulative users</h3><p class="desc">Total registered accounts over the last 90 days</p><div class="chart-box"><canvas id="cumUsers"></canvas></div></div>
       <div class="card"><h3>New signups / day</h3><p class="desc">Last 30 days</p><div class="chart-box"><canvas id="newUsers"></canvas></div></div>
-      <div class="card"><h3>Sessions / day</h3><p class="desc">Last 30 days</p><div class="chart-box"><canvas id="sessDaily"></canvas></div></div>
-      <div class="card"><h3>Messages / day</h3><p class="desc">Last 30 days</p><div class="chart-box"><canvas id="msgDaily"></canvas></div></div>
     </div>
 
     <!-- Retention -->
@@ -220,17 +262,39 @@ function login(){
 function logout(){ sessionStorage.removeItem('naata_admin_token'); location.reload(); }
 function showApp(){ document.getElementById('gate').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); }
 
+/* ---------- date range state ---------- */
+let lastData = null;
+function fmtDate(d){ return d.toISOString().slice(0,10); }
+function setPreset(days){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active', c.dataset.days==String(days)));
+  const end = new Date();
+  let start;
+  if(days==='all'){ start = new Date('2026-01-01'); }
+  else { start = new Date(); start.setDate(end.getDate() - (Number(days)-1)); }
+  document.getElementById('startDate').value = fmtDate(start);
+  document.getElementById('endDate').value = fmtDate(end);
+  load();
+}
+function customRange(){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  load();
+}
+
 async function load(){
   const token = sessionStorage.getItem('naata_admin_token');
   if(!token){ location.reload(); return; }
   document.getElementById('loading').classList.remove('hidden');
   document.getElementById('content').classList.add('hidden');
+  const s = document.getElementById('startDate').value;
+  const e = document.getElementById('endDate').value;
+  const qs = (s&&e) ? ("?start="+s+"&end="+e) : "";
   try{
-    const res = await fetch(API_BASE + "/api/admin/stats", { headers:{ "Authorization":"Bearer "+token }});
+    const res = await fetch(API_BASE + "/api/admin/stats" + qs, { headers:{ "Authorization":"Bearer "+token }});
     if(res.status===401){ throw new Error("Invalid token — access denied."); }
     if(res.status===503){ throw new Error("Admin analytics not configured on the server yet."); }
     if(!res.ok){ throw new Error("Server error ("+res.status+")."); }
     const data = await res.json();
+    lastData = data;
     render(data);
     document.getElementById('loading').classList.add('hidden');
     document.getElementById('content').classList.remove('hidden');
@@ -271,12 +335,35 @@ function doughnut(id,labels,vals){
     options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{color:INK,font:{size:11},boxWidth:12,padding:10}}}}});
 }
 function entries(obj){ return Object.entries(obj||{}).sort((a,b)=>b[1]-a[1]); }
+/* Title-case a snake_case / lowercase key; map empty/unknown synonyms to a clean label */
+const UNSPEC = new Set(["unknown","unspecified","not_specified","none","null",""]);
+function pretty(k){
+  if(k==null) return "Not specified";
+  const key=String(k).toLowerCase();
+  if(UNSPEC.has(key)) return "Not specified";
+  if(key==="ios") return "iOS";
+  if(key==="ai") return "AI companion";
+  return String(k).replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase());
+}
+/* Normalize a distribution: merge synonym buckets, prettify labels, keep counts exact */
+function normDist(obj){
+  const merged={};
+  for(const [k,v] of Object.entries(obj||{})){ const p=pretty(k); merged[p]=(merged[p]||0)+v; }
+  return merged;
+}
+/* Is a distribution entirely "Not specified" (i.e. not really tracked)? */
+function allUnspec(obj){
+  const e=Object.entries(normDist(obj)); return e.length>0 && e.every(([k])=>k==="Not specified");
+}
 function distTable(id,obj,fmt){
   const el=document.getElementById(id); const e=entries(obj);
   el.innerHTML = e.length? e.map(([k,v])=>`<div class="distrow"><span class="k">${k}</span><span class="val">${fmt?fmt(v):nf(v)}</span></div>`).join('')
     : '<div class="note">No data yet.</div>';
 }
 function heatColor(p){ if(p==null) return {bg:'#f4efe6',t:''}; const a=Math.min(1,p/60); return {bg:`rgba(122,139,92,${0.12+a*0.7})`,t:p>=45?'#fff':'#2c2320'}; }
+/* Doughnut from a distribution object, with synonym-merged, prettified labels */
+function distDoughnut(id,obj){ const e=entries(normDist(obj)); doughnut(id, e.map(x=>x[0]), e.map(x=>x[1])); }
+function distHbar(id,obj){ const e=entries(normDist(obj)); hbarChart(id, e.map(x=>x[0]), e.map(x=>x[1])); }
 
 /* ---------- main render ---------- */
 function render(d){
@@ -301,12 +388,48 @@ function render(d){
     accentKpi(nf(au.mau),"MAU","active in last 30d") +
     kpi((au.stickiness!=null?Math.round(au.stickiness*100)+"%":"—"),"Stickiness","DAU / MAU");
 
-  // growth
+  // ---- this period (date-range driven) ----
+  const p=d.period, pc=p.counts;
+  document.getElementById('periodLabel').textContent = p.start + " → " + p.end + " (" + p.days + " days)";
+  document.getElementById('periodKpis').innerHTML =
+    accentKpi(nf(pc.new_users),"New signups") +
+    accentKpi(nf(pc.active_users),"Active users","engaged in period") +
+    kpi(nf(pc.new_couples),"New couples") +
+    kpi(nf(pc.sessions),"Sessions started") +
+    kpi(nf(pc.messages),"Messages") +
+    kpi(nf(pc.emotions),"Emotions logged") +
+    kpi(nf(pc.checkins),"Check-ins");
+  const pd=p.daily;
+  document.getElementById('pUsersDesc').textContent = nf(pc.new_users)+" total in period";
+  document.getElementById('pSessDesc').textContent = nf(pc.sessions)+" total in period";
+  document.getElementById('pMsgDesc').textContent = nf(pc.messages)+" total in period";
+  barChart('pUsers', pd.users.map(x=>x.date), pd.users.map(x=>x.count), OCHRE);
+  barChart('pSess', pd.sessions.map(x=>x.date), pd.sessions.map(x=>x.count), SAGE);
+  barChart('pMsg', pd.messages.map(x=>x.date), pd.messages.map(x=>x.count), TERRA);
+
+  // ---- store installs ----
+  const si=d.store_installs;
+  document.getElementById('storeKpis').innerHTML =
+    accentKpi(nf(si.device_installs_total),"Device installs","push-registered devices") +
+    kpi(nf(si.accounts_with_device),"Accounts w/ device") +
+    kpi(nf(si.devices_by_platform.ios||0),"iOS devices") +
+    kpi(nf(si.devices_by_platform.android||0),"Android devices") +
+    kpi(si.ios_downloads==null?"—":nf(si.ios_downloads),"iOS downloads", si.store_downloads_connected?"":"needs App Store key") +
+    kpi(si.android_downloads==null?"—":nf(si.android_downloads),"Android downloads", si.store_downloads_connected?"":"needs Play access");
+  distDoughnut('devPlatform', si.devices_by_platform);
+  distDoughnut('acctPlatform', si.accounts_by_platform);
+  document.getElementById('storeNote').innerHTML =
+    '<h3>About these numbers</h3><div class="note">'+
+    '<b>Device installs</b> and <b>accounts</b> above are 100% real — every device that opened naata and registered for '+
+    'notifications, split by platform. They are the closest real signal we hold to "installs".<br>'+
+    '<b>iOS / Android downloads</b> show <b>—</b> because exact store-download totals live in Apple &amp; Google\'s systems. '+
+    'To fill them in, connect an <b>App Store Connect API key</b> (.p8) and <b>Play Console reporting</b> access — then this '+
+    'section switches to live store figures. No estimated numbers are ever shown.</div>';
+
+  // growth (all-time)
   const g=d.growth;
   lineChart('cumUsers', g.users_daily_90.map(x=>x.date), g.users_daily_90.map(x=>x.cumulative), TERRA);
   barChart('newUsers', g.users_daily_30.map(x=>x.date), g.users_daily_30.map(x=>x.count), OCHRE);
-  barChart('sessDaily', g.sessions_daily_30.map(x=>x.date), g.sessions_daily_30.map(x=>x.count), SAGE);
-  barChart('msgDaily', g.messages_daily_30.map(x=>x.date), g.messages_daily_30.map(x=>x.count), TERRA);
 
   // retention
   const r=d.retention;
@@ -321,28 +444,30 @@ function render(d){
 
   // engagement doughnuts
   const en=d.engagement;
-  const st=entries(en.sessions_by_status); doughnut('sessStatus', st.map(x=>x[0]), st.map(x=>x[1]));
-  const ms=entries(en.messages_by_sender); doughnut('msgSender', ms.map(x=>x[0]), ms.map(x=>x[1]));
-  const ty=entries(en.sessions_by_type); doughnut('sessType', ty.map(x=>x[0]), ty.map(x=>x[1]));
+  distDoughnut('sessStatus', en.sessions_by_status);
+  distDoughnut('msgSender', en.messages_by_sender);
+  distDoughnut('sessType', en.sessions_by_type);
 
   // distributions
   const di=d.distributions;
-  const pf=entries(di.platforms); doughnut('platform', pf.map(x=>x[0]), pf.map(x=>x[1]));
-  const lg=entries(di.languages); doughnut('lang', lg.map(x=>x[0]), lg.map(x=>x[1]));
-  const gd=entries(di.genders); doughnut('gender', gd.map(x=>x[0]), gd.map(x=>x[1]));
+  distDoughnut('platform', di.platforms);
+  distDoughnut('lang', di.languages);
+  distDoughnut('gender', di.genders);
 
   // emotions + checkins
-  const em=entries(d.emotions.by_type);
   document.getElementById('emoDesc').textContent =
     d.emotions.total+" logged · avg intensity "+(d.emotions.avg_score??"—");
-  hbarChart('emotions', em.map(x=>x[0]), em.map(x=>x[1]));
-  const ck=entries(d.checkins.by_mood);
+  distHbar('emotions', d.emotions.by_type);
   document.getElementById('checkinDesc').textContent = d.checkins.total+" check-ins";
-  hbarChart('checkins', ck.map(x=>x[0]), ck.map(x=>x[1]));
+  distHbar('checkins', d.checkins.by_mood);
 
   // detail tables
-  distTable('versions', di.app_versions);
-  distTable('reltypes', di.relationship_types);
+  const verObj = allUnspec(di.app_versions)
+    ? null : normDist(di.app_versions);
+  document.getElementById('versions').innerHTML = verObj
+    ? entries(verObj).map(([k,v])=>`<div class="distrow"><span class="k">${k}</span><span class="val">${nf(v)}</span></div>`).join('')
+    : '<div class="note">Not tracked yet — the app doesn\'t report its version on login. (Add <code>app_version</code> on auth to populate this.)</div>';
+  distTable('reltypes', normDist(di.relationship_types));
   const s=d.streaks;
   document.getElementById('streaks').innerHTML =
     `<div class="distrow"><span class="k">Longest streak</span><span class="val">${s.max} days</span></div>`+
@@ -386,8 +511,39 @@ function renderCohorts(cohorts){
   document.getElementById('cohortTable').innerHTML=head+rows;
 }
 
+/* ---------- CSV export ---------- */
+function exportCSV(){
+  const d=lastData; if(!d){ return; }
+  const rows=[];
+  const push=(section,metric,value)=>rows.push([section,metric,value]);
+  const t=d.totals, au=d.active_users, si=d.store_installs, p=d.period, r=d.retention;
+  push("meta","generated_at",d.generated_at);
+  push("meta","period_start",p.start); push("meta","period_end",p.end);
+  Object.entries(t).forEach(([k,v])=>push("totals",k,v));
+  Object.entries(au).forEach(([k,v])=>push("active_users",k,v));
+  Object.entries(p.counts).forEach(([k,v])=>push("period",k,v));
+  push("retention","d1_rate_pct",r.d1.rate); push("retention","d7_rate_pct",r.d7.rate); push("retention","d30_rate_pct",r.d30.rate);
+  Object.entries(si.devices_by_platform).forEach(([k,v])=>push("device_installs",k,v));
+  Object.entries(si.accounts_by_platform).forEach(([k,v])=>push("accounts_by_platform",k,v));
+  Object.entries(d.pairing_funnel).forEach(([k,v])=>push("funnel",k,v));
+  // daily series (period)
+  p.daily.users.forEach(x=>push("daily_new_users",x.date,x.count));
+  p.daily.sessions.forEach(x=>push("daily_sessions",x.date,x.count));
+  p.daily.messages.forEach(x=>push("daily_messages",x.date,x.count));
+  // retention cohorts
+  r.cohorts.forEach(c=>c.weeks.forEach((w,i)=>{ if(w!=null) push("cohort_"+c.cohort,"W"+i+"_pct",w); }));
+  const csv="section,metric,value\n"+rows.map(r=>r.map(c=>{
+    const s=String(c); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
+  }).join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="naata-stats_"+p.start+"_to_"+p.end+".csv";
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
 /* auto-login if token already stored */
-if(sessionStorage.getItem('naata_admin_token')){ showApp(); load(); }
+if(sessionStorage.getItem('naata_admin_token')){ showApp(); setPreset(30); }
 </script>
 </body>
 </html>
