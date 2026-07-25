@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>naata · admin analytics</title>
+<link rel="icon" href="naata-app-icon-small.png" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --terracotta:#C2714F; --sage:#7A8B5C; --ochre:#D4903E; --cream:#F5EDE0;
+    --ink:#2c2320; --muted:#8a7d73; --line:#e7dccd; --card:#fffdf9; --bg:#faf5ec;
+    --good:#5c8a5c; --bad:#c25b4f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+  a{color:var(--terracotta)}
+  .wrap{max-width:1180px;margin:0 auto;padding:20px 16px 80px}
+
+  /* Login gate */
+  #gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .gate-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:34px 30px;
+    max-width:380px;width:100%;box-shadow:0 10px 40px rgba(120,90,60,.08);text-align:center}
+  .gate-card img{width:56px;height:56px;border-radius:14px;margin-bottom:14px}
+  .gate-card h1{font-size:20px;margin:0 0 4px}
+  .gate-card p{color:var(--muted);font-size:13px;margin:0 0 20px}
+  input[type=password],input[type=text]{width:100%;padding:12px 14px;border:1px solid var(--line);
+    border-radius:12px;font-size:15px;background:#fff;color:var(--ink)}
+  button.primary{margin-top:12px;width:100%;padding:12px;border:0;border-radius:12px;background:var(--terracotta);
+    color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+  button.primary:hover{filter:brightness(1.05)}
+  .err{color:var(--bad);font-size:13px;margin-top:10px;min-height:16px}
+
+  /* Header */
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+  header.top .brand{display:flex;align-items:center;gap:10px}
+  header.top img{width:34px;height:34px;border-radius:9px}
+  header.top h1{font-size:19px;margin:0}
+  header.top .sub{color:var(--muted);font-size:12px;margin-top:2px}
+  .actions{display:flex;gap:8px;align-items:center}
+  .btn{padding:8px 14px;border:1px solid var(--line);background:var(--card);border-radius:10px;
+    font-size:13px;cursor:pointer;color:var(--ink)}
+  .btn:hover{background:#fff}
+  .updated{color:var(--muted);font-size:12px;margin:2px 0 18px}
+
+  .section{margin:26px 0 8px}
+  .section h2{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+    margin:0 0 12px;font-weight:700}
+
+  /* KPI grid */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 16px}
+  .kpi .v{font-size:26px;font-weight:700;line-height:1.1}
+  .kpi .l{color:var(--muted);font-size:12px;margin-top:5px}
+  .kpi .s{font-size:11px;margin-top:6px;color:var(--sage)}
+  .kpi.accent{background:linear-gradient(135deg,#fbeee0,#fff);border-color:#f0dcc6}
+
+  /* Cards / charts */
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+  .card h3{margin:0 0 2px;font-size:15px}
+  .card .desc{color:var(--muted);font-size:12px;margin:0 0 14px}
+  .chart-box{position:relative;height:260px}
+  .chart-box.tall{height:300px}
+
+  /* Funnel */
+  .funnel{display:flex;flex-direction:column;gap:8px}
+  .frow{display:flex;align-items:center;gap:10px}
+  .frow .bar{height:34px;background:linear-gradient(90deg,var(--terracotta),var(--ochre));border-radius:8px;
+    display:flex;align-items:center;padding:0 10px;color:#fff;font-weight:600;font-size:13px;min-width:44px;
+    transition:width .5s ease}
+  .frow .lab{width:190px;font-size:13px;color:var(--ink)}
+  .frow .pct{font-size:12px;color:var(--muted);width:52px;text-align:right}
+
+  /* Retention heatmap */
+  table.heat{border-collapse:collapse;width:100%;font-size:12px}
+  table.heat th,table.heat td{padding:6px 4px;text-align:center;border:1px solid var(--line)}
+  table.heat th{color:var(--muted);font-weight:600;background:#fbf6ee}
+  table.heat td.c{font-weight:600;color:#3a2f28}
+  table.heat td.lab{text-align:left;white-space:nowrap;color:var(--ink);font-weight:600}
+  .rcards{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .rcard{flex:1;min-width:120px;background:#fbf6ee;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .rcard .v{font-size:22px;font-weight:700}
+  .rcard .l{font-size:11px;color:var(--muted);margin-top:3px}
+
+  /* small dist tables */
+  .distrow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  .distrow:last-child{border-bottom:0}
+  .distrow .k{color:var(--ink)}
+  .distrow .val{color:var(--muted);font-variant-numeric:tabular-nums}
+  .note{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.5}
+  .hidden{display:none!important}
+  .spin{display:inline-block;width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--terracotta);
+    border-radius:50%;animation:sp 0.8s linear infinite;vertical-align:-3px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  footer{color:var(--muted);font-size:11px;text-align:center;margin-top:40px}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN GATE ===== -->
+<div id="gate">
+  <div class="gate-card">
+    <img src="naata-app-icon-small.png" alt="naata" onerror="this.style.display='none'"/>
+    <h1>naata admin</h1>
+    <p>Enter the admin access token to view live analytics.</p>
+    <input id="token" type="password" placeholder="Admin access token" autocomplete="off"
+      onkeydown="if(event.key==='Enter')login()"/>
+    <button class="primary" onclick="login()">Unlock dashboard</button>
+    <div class="err" id="gateErr"></div>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="app" class="wrap hidden">
+  <header class="top">
+    <div class="brand">
+      <img src="naata-app-icon-small.png" alt="" onerror="this.style.display='none'"/>
+      <div>
+        <h1>Analytics</h1>
+        <div class="sub">naata.ai · live product metrics</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="load()">↻ Refresh</button>
+      <button class="btn" onclick="logout()">Log out</button>
+    </div>
+  </header>
+  <div class="updated" id="updated"></div>
+
+  <div id="loading" style="padding:40px;text-align:center;color:var(--muted)">
+    <span class="spin"></span> Loading live data…
+  </div>
+
+  <div id="content" class="hidden">
+
+    <!-- KPIs -->
+    <div class="section"><h2>Overview</h2></div>
+    <div class="kpis" id="kpis"></div>
+
+    <!-- Active users -->
+    <div class="section"><h2>Active users</h2></div>
+    <div class="kpis" id="activeKpis"></div>
+
+    <!-- Growth -->
+    <div class="section"><h2>Growth</h2></div>
+    <div class="grid g2">
+      <div class="card"><h3>Cumulative users</h3><p class="desc">Total registered accounts over the last 90 days</p><div class="chart-box"><canvas id="cumUsers"></canvas></div></div>
+      <div class="card"><h3>New signups / day</h3><p class="desc">Last 30 days</p><div class="chart-box"><canvas id="newUsers"></canvas></div></div>
+      <div class="card"><h3>Sessions / day</h3><p class="desc">Last 30 days</p><div class="chart-box"><canvas id="sessDaily"></canvas></div></div>
+      <div class="card"><h3>Messages / day</h3><p class="desc">Last 30 days</p><div class="chart-box"><canvas id="msgDaily"></canvas></div></div>
+    </div>
+
+    <!-- Retention -->
+    <div class="section"><h2>Retention</h2></div>
+    <div class="card">
+      <div class="rcards" id="retCards"></div>
+      <h3>Weekly cohorts</h3>
+      <p class="desc">% of each signup-week cohort active in later weeks (active = message, emotion, check-in or session).</p>
+      <div style="overflow-x:auto"><table class="heat" id="cohortTable"></table></div>
+    </div>
+
+    <!-- Funnel + Engagement -->
+    <div class="section"><h2>Pairing funnel &amp; engagement</h2></div>
+    <div class="grid g2">
+      <div class="card"><h3>Activation funnel</h3><p class="desc">User journey from signup to active paired sessions</p><div class="funnel" id="funnel"></div></div>
+      <div class="card"><h3>Sessions by status</h3><p class="desc">Every session ever created</p><div class="chart-box"><canvas id="sessStatus"></canvas></div></div>
+      <div class="card"><h3>Messages by sender</h3><p class="desc">Who is doing the talking</p><div class="chart-box"><canvas id="msgSender"></canvas></div></div>
+      <div class="card"><h3>Session type</h3><p class="desc">Private space vs joint Bridge</p><div class="chart-box"><canvas id="sessType"></canvas></div></div>
+    </div>
+
+    <!-- Distributions -->
+    <div class="section"><h2>Who is using naata</h2></div>
+    <div class="grid g3">
+      <div class="card"><h3>Platform</h3><p class="desc">Device installs (push tokens)</p><div class="chart-box"><canvas id="platform"></canvas></div></div>
+      <div class="card"><h3>Language</h3><p class="desc">User language preference</p><div class="chart-box"><canvas id="lang"></canvas></div></div>
+      <div class="card"><h3>Gender</h3><p class="desc">Self-reported</p><div class="chart-box"><canvas id="gender"></canvas></div></div>
+    </div>
+
+    <!-- Emotion + checkins -->
+    <div class="section"><h2>Emotional signal</h2></div>
+    <div class="grid g2">
+      <div class="card"><h3>Top emotions logged</h3><p class="desc" id="emoDesc"></p><div class="chart-box tall"><canvas id="emotions"></canvas></div></div>
+      <div class="card"><h3>Daily check-in moods</h3><p class="desc" id="checkinDesc"></p><div class="chart-box tall"><canvas id="checkins"></canvas></div></div>
+    </div>
+
+    <!-- Raw tables -->
+    <div class="section"><h2>Details</h2></div>
+    <div class="grid g3">
+      <div class="card"><h3>App versions</h3><div id="versions"></div></div>
+      <div class="card"><h3>Relationship types</h3><div id="reltypes"></div></div>
+      <div class="card"><h3>Streaks</h3><div id="streaks"></div></div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>Notes on the numbers</h3>
+      <div id="notes" class="note"></div>
+    </div>
+  </div>
+  <footer>naata.ai · internal · figures computed live from the production database</footer>
+</div>
+
+<script>
+const API_BASE = "https://naata-backend-483381158187.asia-south1.run.app";
+const PALETTE = ["#C2714F","#7A8B5C","#D4903E","#a9856b","#5c8a8a","#b56a7a","#8a7d5c","#6a7a9a","#9a6a5c","#7a9a6a","#c2a04f","#8a6a9a"];
+const TERRA="#C2714F", SAGE="#7A8B5C", OCHRE="#D4903E", INK="#2c2320", MUTED="#8a7d73", LINE="#e7dccd";
+let charts = {};
+
+function login(){
+  const t = document.getElementById('token').value.trim();
+  if(!t){ document.getElementById('gateErr').textContent="Enter a token."; return; }
+  sessionStorage.setItem('naata_admin_token', t);
+  document.getElementById('gateErr').textContent="";
+  showApp(); load();
+}
+function logout(){ sessionStorage.removeItem('naata_admin_token'); location.reload(); }
+function showApp(){ document.getElementById('gate').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); }
+
+async function load(){
+  const token = sessionStorage.getItem('naata_admin_token');
+  if(!token){ location.reload(); return; }
+  document.getElementById('loading').classList.remove('hidden');
+  document.getElementById('content').classList.add('hidden');
+  try{
+    const res = await fetch(API_BASE + "/api/admin/stats", { headers:{ "Authorization":"Bearer "+token }});
+    if(res.status===401){ throw new Error("Invalid token — access denied."); }
+    if(res.status===503){ throw new Error("Admin analytics not configured on the server yet."); }
+    if(!res.ok){ throw new Error("Server error ("+res.status+")."); }
+    const data = await res.json();
+    render(data);
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('content').classList.remove('hidden');
+  }catch(e){
+    document.getElementById('loading').innerHTML =
+      '<div style="color:var(--bad)">'+e.message+'</div>'+
+      '<button class="btn" style="margin-top:14px" onclick="logout()">Re-enter token</button>';
+  }
+}
+
+/* ---------- render helpers ---------- */
+const nf = n => (n==null?"—":Number(n).toLocaleString());
+function kpi(v,l,s){ return `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div>${s?`<div class="s">${s}</div>`:''}</div>`; }
+function accentKpi(v,l,s){ return `<div class="kpi accent"><div class="v">${v}</div><div class="l">${l}</div>${s?`<div class="s">${s}</div>`:''}</div>`; }
+
+function destroy(id){ if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
+function mkChart(id,cfg){ if(!window.Chart) return; destroy(id); const el=document.getElementById(id); if(el) charts[id]=new Chart(el,cfg); }
+
+const gridCfg = { grid:{color:"rgba(0,0,0,0.04)"}, ticks:{color:MUTED,font:{size:11}} };
+function lineChart(id,labels,vals,color,fill){
+  mkChart(id,{type:'line',data:{labels,datasets:[{data:vals,borderColor:color,backgroundColor:fill||'rgba(194,113,79,.12)',
+    fill:true,tension:.35,pointRadius:0,borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{...gridCfg,ticks:{...gridCfg.ticks,maxTicksLimit:8}},y:{...gridCfg,beginAtZero:true}}}});
+}
+function barChart(id,labels,vals,color){
+  mkChart(id,{type:'bar',data:{labels,datasets:[{data:vals,backgroundColor:color||TERRA,borderRadius:5,maxBarThickness:26}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{...gridCfg,ticks:{...gridCfg.ticks,maxTicksLimit:10}},y:{...gridCfg,beginAtZero:true}}}});
+}
+function hbarChart(id,labels,vals){
+  mkChart(id,{type:'bar',data:{labels,datasets:[{data:vals,backgroundColor:labels.map((_,i)=>PALETTE[i%PALETTE.length]),borderRadius:5}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{...gridCfg,beginAtZero:true},y:gridCfg}}});
+}
+function doughnut(id,labels,vals){
+  mkChart(id,{type:'doughnut',data:{labels,datasets:[{data:vals,backgroundColor:labels.map((_,i)=>PALETTE[i%PALETTE.length]),borderWidth:2,borderColor:"#fffdf9"}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{color:INK,font:{size:11},boxWidth:12,padding:10}}}}});
+}
+function entries(obj){ return Object.entries(obj||{}).sort((a,b)=>b[1]-a[1]); }
+function distTable(id,obj,fmt){
+  const el=document.getElementById(id); const e=entries(obj);
+  el.innerHTML = e.length? e.map(([k,v])=>`<div class="distrow"><span class="k">${k}</span><span class="val">${fmt?fmt(v):nf(v)}</span></div>`).join('')
+    : '<div class="note">No data yet.</div>';
+}
+function heatColor(p){ if(p==null) return {bg:'#f4efe6',t:''}; const a=Math.min(1,p/60); return {bg:`rgba(122,139,92,${0.12+a*0.7})`,t:p>=45?'#fff':'#2c2320'}; }
+
+/* ---------- main render ---------- */
+function render(d){
+  document.getElementById('updated').textContent =
+    "Last updated " + new Date(d.generated_at).toLocaleString() + " · data is live";
+
+  const t=d.totals;
+  document.getElementById('kpis').innerHTML =
+    accentKpi(nf(t.users),"Registered users") +
+    accentKpi(nf(t.paired_users),"Paired users", t.users?Math.round(100*t.paired_users/t.users)+"% of users":"") +
+    kpi(nf(t.active_couples),"Active couples") +
+    kpi(nf(t.sessions),"Sessions", nf(t.completed_sessions)+" completed") +
+    kpi(nf(t.messages),"Messages", d.engagement.avg_messages_per_session+" / session") +
+    kpi(nf(t.emotion_events),"Emotions logged") +
+    kpi(nf(t.checkins),"Check-ins") +
+    kpi(nf(t.device_installs),"Device installs");
+
+  const au=d.active_users;
+  document.getElementById('activeKpis').innerHTML =
+    accentKpi(nf(au.dau),"DAU","active in last 24h") +
+    accentKpi(nf(au.wau),"WAU","active in last 7d") +
+    accentKpi(nf(au.mau),"MAU","active in last 30d") +
+    kpi((au.stickiness!=null?Math.round(au.stickiness*100)+"%":"—"),"Stickiness","DAU / MAU");
+
+  // growth
+  const g=d.growth;
+  lineChart('cumUsers', g.users_daily_90.map(x=>x.date), g.users_daily_90.map(x=>x.cumulative), TERRA);
+  barChart('newUsers', g.users_daily_30.map(x=>x.date), g.users_daily_30.map(x=>x.count), OCHRE);
+  barChart('sessDaily', g.sessions_daily_30.map(x=>x.date), g.sessions_daily_30.map(x=>x.count), SAGE);
+  barChart('msgDaily', g.messages_daily_30.map(x=>x.date), g.messages_daily_30.map(x=>x.count), TERRA);
+
+  // retention
+  const r=d.retention;
+  document.getElementById('retCards').innerHTML =
+    `<div class="rcard"><div class="v">${r.d1.rate}%</div><div class="l">Day 1 · ${r.d1.retained}/${r.d1.eligible}</div></div>`+
+    `<div class="rcard"><div class="v">${r.d7.rate}%</div><div class="l">Day 7 · ${r.d7.retained}/${r.d7.eligible}</div></div>`+
+    `<div class="rcard"><div class="v">${r.d30.rate}%</div><div class="l">Day 30 · ${r.d30.retained}/${r.d30.eligible}</div></div>`;
+  renderCohorts(r.cohorts);
+
+  // funnel
+  renderFunnel(d.pairing_funnel);
+
+  // engagement doughnuts
+  const en=d.engagement;
+  const st=entries(en.sessions_by_status); doughnut('sessStatus', st.map(x=>x[0]), st.map(x=>x[1]));
+  const ms=entries(en.messages_by_sender); doughnut('msgSender', ms.map(x=>x[0]), ms.map(x=>x[1]));
+  const ty=entries(en.sessions_by_type); doughnut('sessType', ty.map(x=>x[0]), ty.map(x=>x[1]));
+
+  // distributions
+  const di=d.distributions;
+  const pf=entries(di.platforms); doughnut('platform', pf.map(x=>x[0]), pf.map(x=>x[1]));
+  const lg=entries(di.languages); doughnut('lang', lg.map(x=>x[0]), lg.map(x=>x[1]));
+  const gd=entries(di.genders); doughnut('gender', gd.map(x=>x[0]), gd.map(x=>x[1]));
+
+  // emotions + checkins
+  const em=entries(d.emotions.by_type);
+  document.getElementById('emoDesc').textContent =
+    d.emotions.total+" logged · avg intensity "+(d.emotions.avg_score??"—");
+  hbarChart('emotions', em.map(x=>x[0]), em.map(x=>x[1]));
+  const ck=entries(d.checkins.by_mood);
+  document.getElementById('checkinDesc').textContent = d.checkins.total+" check-ins";
+  hbarChart('checkins', ck.map(x=>x[0]), ck.map(x=>x[1]));
+
+  // detail tables
+  distTable('versions', di.app_versions);
+  distTable('reltypes', di.relationship_types);
+  const s=d.streaks;
+  document.getElementById('streaks').innerHTML =
+    `<div class="distrow"><span class="k">Longest streak</span><span class="val">${s.max} days</span></div>`+
+    `<div class="distrow"><span class="k">Couples with a streak</span><span class="val">${s.couples_with_streak}</span></div>`+
+    `<div class="distrow"><span class="k">Avg active streak</span><span class="val">${s.avg_active} days</span></div>`;
+
+  document.getElementById('notes').innerHTML = Object.values(d.notes||{}).map(x=>"• "+x).join("<br>");
+}
+
+function renderFunnel(f){
+  const steps=[
+    ["Registered", f.registered],
+    ["Completed onboarding", f.onboarded],
+    ["Paired with partner", f.in_couple],
+    ["In a couple with sessions", f.in_active_session_couple],
+  ];
+  const max=Math.max(1,...steps.map(s=>s[1]));
+  document.getElementById('funnel').innerHTML = steps.map(([lab,v])=>{
+    const w=Math.max(6, Math.round(100*v/max));
+    const pct=f.registered?Math.round(100*v/f.registered)+"%":"";
+    return `<div class="frow"><div class="lab">${lab}</div>`+
+      `<div class="bar" style="width:${w}%">${v}</div><div class="pct">${pct}</div></div>`;
+  }).join('');
+}
+
+function renderCohorts(cohorts){
+  if(!cohorts||!cohorts.length){ document.getElementById('cohortTable').innerHTML="<tr><td class='note'>No cohorts yet.</td></tr>"; return; }
+  const W=cohorts[0].weeks.length;
+  let head="<tr><th>Cohort week</th><th>Users</th>";
+  for(let i=0;i<W;i++) head+=`<th>W${i}</th>`;
+  head+="</tr>";
+  let rows="";
+  cohorts.slice().reverse().forEach(c=>{
+    rows+=`<tr><td class="lab">${c.cohort}</td><td class="c">${c.size}</td>`;
+    c.weeks.forEach(p=>{
+      const col=heatColor(p);
+      rows+=`<td class="c" style="background:${col.bg};color:${col.t}">${p==null?"":p+"%"}</td>`;
+    });
+    rows+="</tr>";
+  });
+  document.getElementById('cohortTable').innerHTML=head+rows;
+}
+
+/* auto-login if token already stored */
+if(sessionStorage.getItem('naata_admin_token')){ showApp(); load(); }
+</script>
+</body>
+</html>
