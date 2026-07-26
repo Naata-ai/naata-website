@@ -10,105 +10,146 @@
 <style>
   :root{
     --terracotta:#C2714F; --sage:#7A8B5C; --ochre:#D4903E; --cream:#F5EDE0;
-    --ink:#2c2320; --muted:#8a7d73; --line:#e7dccd; --card:#fffdf9; --bg:#faf5ec;
-    --good:#5c8a5c; --bad:#c25b4f;
+    --ink:#2b2320; --muted:#8f8378; --faint:#b6aa9c; --line:#ece2d3; --card:#fffdfa; --bg:#f7f1e7;
+    --good:#4f8a52; --bad:#c85a4c; --shadow:0 1px 2px rgba(90,60,40,.04),0 8px 24px rgba(120,90,60,.06);
+    --r:18px;
   }
   *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+    background:
+      radial-gradient(1200px 500px at 80% -10%, #fbf3e6 0%, rgba(251,243,230,0) 60%),
+      radial-gradient(900px 500px at -10% 0%, #f6ece0 0%, rgba(246,236,224,0) 55%),
+      var(--bg);
+    color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh}
   a{color:var(--terracotta)}
-  .wrap{max-width:1180px;margin:0 auto;padding:20px 16px 80px}
+  .wrap{max-width:1200px;margin:0 auto;padding:18px 18px 90px}
 
-  /* Login gate */
+  /* ---------- Login gate ---------- */
   #gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-  .gate-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:34px 30px;
-    max-width:380px;width:100%;box-shadow:0 10px 40px rgba(120,90,60,.08);text-align:center}
-  .gate-card img{width:56px;height:56px;border-radius:14px;margin-bottom:14px}
-  .gate-card h1{font-size:20px;margin:0 0 4px}
-  .gate-card p{color:var(--muted);font-size:13px;margin:0 0 20px}
-  input[type=password],input[type=text]{width:100%;padding:12px 14px;border:1px solid var(--line);
-    border-radius:12px;font-size:15px;background:#fff;color:var(--ink)}
-  button.primary{margin-top:12px;width:100%;padding:12px;border:0;border-radius:12px;background:var(--terracotta);
-    color:#fff;font-size:15px;font-weight:600;cursor:pointer}
-  button.primary:hover{filter:brightness(1.05)}
+  .gate-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:38px 32px;
+    max-width:390px;width:100%;box-shadow:0 20px 60px rgba(120,90,60,.12);text-align:center}
+  .gate-card img{width:58px;height:58px;border-radius:15px;margin-bottom:16px}
+  .gate-card h1{font-size:21px;margin:0 0 4px;letter-spacing:-.01em}
+  .gate-card p{color:var(--muted);font-size:13px;margin:0 0 22px}
+  input[type=password],input[type=text]{width:100%;padding:13px 15px;border:1px solid var(--line);
+    border-radius:13px;font-size:15px;background:#fff;color:var(--ink);outline:none;transition:border .15s,box-shadow .15s}
+  input[type=password]:focus{border-color:var(--terracotta);box-shadow:0 0 0 3px rgba(194,113,79,.14)}
+  button.primary{margin-top:13px;width:100%;padding:13px;border:0;border-radius:13px;background:var(--terracotta);
+    color:#fff;font-size:15px;font-weight:650;cursor:pointer;transition:filter .15s,transform .05s}
+  button.primary:hover{filter:brightness(1.06)} button.primary:active{transform:translateY(1px)}
   .err{color:var(--bad);font-size:13px;margin-top:10px;min-height:16px}
 
-  /* Header */
-  header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap}
-  header.top .brand{display:flex;align-items:center;gap:10px}
-  header.top img{width:34px;height:34px;border-radius:9px}
-  header.top h1{font-size:19px;margin:0}
-  header.top .sub{color:var(--muted);font-size:12px;margin-top:2px}
+  /* ---------- Header ---------- */
+  header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;
+    flex-wrap:wrap;padding:12px 4px;margin:-18px -4px 4px;
+    background:rgba(247,241,231,.82);backdrop-filter:saturate(160%) blur(12px);border-bottom:1px solid var(--line)}
+  header.top .brand{display:flex;align-items:center;gap:11px}
+  header.top img{width:36px;height:36px;border-radius:10px}
+  header.top h1{font-size:19px;margin:0;letter-spacing:-.01em}
+  header.top .sub{color:var(--muted);font-size:12px;margin-top:1px}
   .actions{display:flex;gap:8px;align-items:center}
-  .btn{padding:8px 14px;border:1px solid var(--line);background:var(--card);border-radius:10px;
-    font-size:13px;cursor:pointer;color:var(--ink)}
-  .btn:hover{background:#fff}
-  .updated{color:var(--muted);font-size:12px;margin:2px 0 12px}
+  .btn{padding:8px 13px;border:1px solid var(--line);background:var(--card);border-radius:10px;
+    font-size:13px;font-weight:550;cursor:pointer;color:var(--ink);transition:background .12s,border .12s}
+  .btn:hover{background:#fff;border-color:#dcccb6}
+  .updated{color:var(--muted);font-size:12px;margin:12px 4px 12px;display:flex;align-items:center;gap:7px}
+  .live-dot{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 0 rgba(79,138,82,.6);
+    animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(79,138,82,.5)}70%{box-shadow:0 0 0 7px rgba(79,138,82,0)}100%{box-shadow:0 0 0 0 rgba(79,138,82,0)}}
 
-  /* Date range bar */
+  /* ---------- Date range bar ---------- */
   .rangebar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);
-    border-radius:12px;padding:8px 12px;margin-bottom:20px}
-  .rblabel{font-size:12px;color:var(--muted);margin-right:2px;font-weight:600}
-  .chip{padding:5px 12px;border:1px solid var(--line);background:#fff;border-radius:8px;font-size:12px;cursor:pointer;color:var(--ink)}
+    border-radius:14px;padding:8px 12px;margin-bottom:8px;box-shadow:var(--shadow)}
+  .rblabel{font-size:12px;color:var(--muted);margin-right:2px;font-weight:650}
+  .chip{padding:6px 13px;border:1px solid var(--line);background:#fff;border-radius:9px;font-size:12.5px;cursor:pointer;
+    color:var(--ink);font-weight:550;transition:all .12s}
   .chip:hover{background:var(--cream)}
-  .chip.active{background:var(--terracotta);color:#fff;border-color:var(--terracotta)}
-  .rbsep,.rbdash{color:var(--muted);font-size:12px}
-  .rangebar input[type=date]{padding:5px 8px;border:1px solid var(--line);border-radius:8px;font-size:12px;background:#fff;color:var(--ink)}
-  .period-label{color:var(--terracotta);font-weight:700;text-transform:none;letter-spacing:0}
+  .chip.active{background:var(--terracotta);color:#fff;border-color:var(--terracotta);box-shadow:0 2px 8px rgba(194,113,79,.3)}
+  .rbsep,.rbdash{color:var(--faint);font-size:12px}
+  .rangebar input[type=date]{padding:6px 9px;border:1px solid var(--line);border-radius:9px;font-size:12.5px;background:#fff;color:var(--ink)}
 
-  .section{margin:26px 0 8px}
-  .section h2{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
-    margin:0 0 12px;font-weight:700}
+  /* ---------- Sections ---------- */
+  .section{margin:30px 0 14px;display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+  .section h2{font-size:16px;margin:0;letter-spacing:-.01em;font-weight:750}
+  .section .em{font-size:16px}
+  .section .hint{color:var(--muted);font-size:12.5px;font-weight:400}
+  .period-label{color:var(--terracotta);font-weight:750}
 
-  /* KPI grid */
-  .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
-  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 16px}
-  .kpi .v{font-size:26px;font-weight:700;line-height:1.1}
-  .kpi .l{color:var(--muted);font-size:12px;margin-top:5px}
-  .kpi .s{font-size:11px;margin-top:6px;color:var(--sage)}
-  .kpi.accent{background:linear-gradient(135deg,#fbeee0,#fff);border-color:#f0dcc6}
+  /* ---------- KPI grids ---------- */
+  .kpis{display:grid;gap:14px}
+  .hero-kpis{grid-template-columns:repeat(auto-fit,minmax(232px,1fr))}
+  .mini-kpis{grid-template-columns:repeat(auto-fill,minmax(158px,1fr))}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 17px;box-shadow:var(--shadow);
+    position:relative;overflow:hidden}
+  .kpi .v{font-size:30px;font-weight:760;line-height:1.05;letter-spacing:-.02em}
+  .kpi .l{color:var(--muted);font-size:12.5px;margin-top:5px;font-weight:500}
+  .kpi .s{font-size:11.5px;margin-top:5px;color:var(--sage)}
+  .kpi.hero .v{font-size:34px}
+  .kpi.hero{padding-bottom:8px}
+  .spark{height:42px;margin:8px -17px -16px;position:relative}
+  .mini .v{font-size:24px}
+  .trend{position:absolute;top:15px;right:15px;font-size:11.5px;font-weight:650;padding:3px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:3px}
+  .trend.up{background:rgba(79,138,82,.12);color:var(--good)}
+  .trend.down{background:rgba(200,90,76,.12);color:var(--bad)}
+  .trend.flat{background:#f0e9dd;color:var(--muted)}
 
-  /* Cards / charts */
+  /* ---------- Cards / charts ---------- */
   .grid{display:grid;gap:16px}
-  .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
-  .g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
-  .card h3{margin:0 0 2px;font-size:15px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+  .span2{grid-column:span 2}
+  @media(max-width:760px){.span2{grid-column:span 1}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 19px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 2px;font-size:15px;letter-spacing:-.01em}
   .card .desc{color:var(--muted);font-size:12px;margin:0 0 14px}
-  .chart-box{position:relative;height:260px}
+  .chart-box{position:relative;height:250px}
   .chart-box.tall{height:300px}
+  .chart-box.hero{height:300px}
 
-  /* Funnel */
-  .funnel{display:flex;flex-direction:column;gap:8px}
-  .frow{display:flex;align-items:center;gap:10px}
-  .frow .bar{height:34px;background:linear-gradient(90deg,var(--terracotta),var(--ochre));border-radius:8px;
-    display:flex;align-items:center;padding:0 10px;color:#fff;font-weight:600;font-size:13px;min-width:44px;
-    transition:width .5s ease}
-  .frow .lab{width:190px;font-size:13px;color:var(--ink)}
-  .frow .pct{font-size:12px;color:var(--muted);width:52px;text-align:right}
+  /* ---------- Gauge ---------- */
+  .gauge-wrap{display:flex;align-items:center;gap:18px}
+  .gauge{position:relative;width:150px;height:150px;flex:0 0 auto}
+  .gauge .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .gauge .center .g-v{font-size:30px;font-weight:760;letter-spacing:-.02em}
+  .gauge .center .g-l{font-size:10.5px;color:var(--muted);margin-top:1px}
+  .gauge-note{font-size:12.5px;color:var(--muted);line-height:1.55}
 
-  /* Retention heatmap */
-  table.heat{border-collapse:collapse;width:100%;font-size:12px}
-  table.heat th,table.heat td{padding:6px 4px;text-align:center;border:1px solid var(--line)}
-  table.heat th{color:var(--muted);font-weight:600;background:#fbf6ee}
-  table.heat td.c{font-weight:600;color:#3a2f28}
-  table.heat td.lab{text-align:left;white-space:nowrap;color:var(--ink);font-weight:600}
-  .rcards{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
-  .rcard{flex:1;min-width:120px;background:#fbf6ee;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
-  .rcard .v{font-size:22px;font-weight:700}
+  /* ---------- Funnel ---------- */
+  .funnel{display:flex;flex-direction:column;gap:10px}
+  .frow{display:flex;align-items:center;gap:12px}
+  .frow .lab{width:190px;font-size:13px;color:var(--ink);font-weight:550;flex:0 0 auto}
+  .frow .track{flex:1;background:#f4ece0;border-radius:9px;overflow:hidden;height:38px;display:flex;align-items:center}
+  .frow .bar{height:100%;background:linear-gradient(90deg,var(--terracotta),var(--ochre));border-radius:9px;
+    display:flex;align-items:center;padding:0 12px;color:#fff;font-weight:700;font-size:13.5px;min-width:40px;
+    transition:width .7s cubic-bezier(.2,.8,.2,1)}
+  .frow .pct{font-size:12px;color:var(--muted);width:82px;text-align:right;flex:0 0 auto}
+  .frow .pct b{color:var(--ink)}
+
+  /* ---------- Retention heatmap ---------- */
+  table.heat{border-collapse:separate;border-spacing:3px;width:100%;font-size:12px}
+  table.heat th{color:var(--muted);font-weight:600;font-size:11px;padding:2px}
+  table.heat td{padding:7px 4px;text-align:center;border-radius:7px;font-weight:600;font-variant-numeric:tabular-nums}
+  table.heat td.lab{text-align:left;white-space:nowrap;color:var(--ink);font-weight:650;background:transparent;padding-left:2px}
+  table.heat td.sz{color:var(--muted);font-weight:600;background:#f6efe4}
+  .rcards{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  .rcard{flex:1;min-width:118px;background:linear-gradient(135deg,#fbf3e7,#fffdfa);border:1px solid var(--line);
+    border-radius:13px;padding:13px 15px}
+  .rcard .v{font-size:24px;font-weight:760;letter-spacing:-.02em}
   .rcard .l{font-size:11px;color:var(--muted);margin-top:3px}
 
-  /* small dist tables */
-  .distrow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  /* ---------- misc ---------- */
+  .distrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}
   .distrow:last-child{border-bottom:0}
-  .distrow .k{color:var(--ink)}
-  .distrow .val{color:var(--muted);font-variant-numeric:tabular-nums}
-  .note{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.5}
+  .distrow .k{color:var(--ink);font-weight:500}
+  .distrow .val{color:var(--muted);font-variant-numeric:tabular-nums;font-weight:600}
+  .note{font-size:12px;color:var(--muted);line-height:1.6}
+  .note code{background:#f3ecdf;padding:1px 5px;border-radius:5px;font-size:11px}
   .hidden{display:none!important}
-  .spin{display:inline-block;width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--terracotta);
-    border-radius:50%;animation:sp 0.8s linear infinite;vertical-align:-3px}
+  .spin{display:inline-block;width:18px;height:18px;border:2.5px solid var(--line);border-top-color:var(--terracotta);
+    border-radius:50%;animation:sp .8s linear infinite;vertical-align:-4px}
   @keyframes sp{to{transform:rotate(360deg)}}
-  footer{color:var(--muted);font-size:11px;text-align:center;margin-top:40px}
+  footer{color:var(--faint);font-size:11px;text-align:center;margin-top:46px}
+  .skel{color:var(--muted);padding:60px;text-align:center}
 </style>
 </head>
 <body>
@@ -131,10 +172,7 @@
   <header class="top">
     <div class="brand">
       <img src="naata-app-icon-small.png" alt="" onerror="this.style.display='none'"/>
-      <div>
-        <h1>Analytics</h1>
-        <div class="sub">naata.ai · live product metrics</div>
-      </div>
+      <div><h1>Analytics</h1><div class="sub">naata.ai · live product metrics</div></div>
     </div>
     <div class="actions">
       <button class="btn" onclick="exportCSV()">⤓ CSV</button>
@@ -142,11 +180,11 @@
       <button class="btn" onclick="logout()">Log out</button>
     </div>
   </header>
+
   <div class="updated" id="updated"></div>
 
-  <!-- Date range controls -->
   <div class="rangebar" id="rangebar">
-    <span class="rblabel">Period:</span>
+    <span class="rblabel">Period</span>
     <button class="chip" data-days="7" onclick="setPreset(7)">7d</button>
     <button class="chip active" data-days="30" onclick="setPreset(30)">30d</button>
     <button class="chip" data-days="90" onclick="setPreset(90)">90d</button>
@@ -158,367 +196,430 @@
     <input type="date" id="endDate" onchange="customRange()" />
   </div>
 
-  <div id="loading" style="padding:40px;text-align:center;color:var(--muted)">
-    <span class="spin"></span> Loading live data…
-  </div>
+  <div id="loading" class="skel"><span class="spin"></span> Loading live data…</div>
 
   <div id="content" class="hidden">
 
-    <!-- KPIs -->
-    <div class="section"><h2>Overview</h2></div>
-    <div class="kpis" id="kpis"></div>
+    <!-- Headline -->
+    <div class="section"><span class="em">✨</span><h2>Headline</h2><span class="hint">the numbers that matter, with 30-day trend</span></div>
+    <div class="kpis hero-kpis" id="heroKpis"></div>
+    <div class="kpis mini-kpis" id="miniKpis" style="margin-top:14px"></div>
 
-    <!-- Active users -->
-    <div class="section"><h2>Active users</h2></div>
-    <div class="kpis" id="activeKpis"></div>
+    <!-- Engagement -->
+    <div class="section"><span class="em">🔥</span><h2>Engagement</h2><span class="hint">who's active right now</span></div>
+    <div class="grid g2">
+      <div class="card"><h3>Active users</h3><p class="desc">Distinct people active in each window</p><div class="chart-box"><canvas id="activeBar"></canvas></div></div>
+      <div class="card"><h3>Stickiness</h3><p class="desc">Daily actives as a share of monthly actives — higher means people come back more often</p>
+        <div class="gauge-wrap"><div class="gauge"><canvas id="stickGauge"></canvas><div class="center"><div class="g-v" id="stickVal">—</div><div class="g-l">DAU / MAU</div></div></div>
+        <div class="gauge-note" id="stickNote"></div></div>
+      </div>
+    </div>
 
-    <!-- This period (date-range driven) -->
-    <div class="section"><h2>This period · <span class="period-label" id="periodLabel"></span></h2></div>
-    <div class="kpis" id="periodKpis"></div>
+    <!-- Growth -->
+    <div class="section"><span class="em">📈</span><h2>Growth</h2><span class="hint">all-time trajectory</span></div>
+    <div class="grid g2">
+      <div class="card span2"><h3>Cumulative registered users</h3><p class="desc">Total accounts over the last 90 days</p><div class="chart-box hero"><canvas id="cumUsers"></canvas></div></div>
+      <div class="card"><h3>New signups / day</h3><p class="desc">Last 30 days</p><div class="chart-box"><canvas id="newUsers"></canvas></div></div>
+      <div class="card"><h3>New couples / day</h3><p class="desc">Last 30 days</p><div class="chart-box"><canvas id="newCouples"></canvas></div></div>
+    </div>
+
+    <!-- This period -->
+    <div class="section"><span class="em">🗓️</span><h2>Selected period</h2><span class="period-label" id="periodLabel"></span></div>
+    <div class="kpis mini-kpis" id="periodKpis"></div>
     <div class="grid g3" style="margin-top:16px">
-      <div class="card"><h3>New signups / day</h3><p class="desc" id="pUsersDesc"></p><div class="chart-box"><canvas id="pUsers"></canvas></div></div>
+      <div class="card"><h3>Signups / day</h3><p class="desc" id="pUsersDesc"></p><div class="chart-box"><canvas id="pUsers"></canvas></div></div>
       <div class="card"><h3>Sessions / day</h3><p class="desc" id="pSessDesc"></p><div class="chart-box"><canvas id="pSess"></canvas></div></div>
       <div class="card"><h3>Messages / day</h3><p class="desc" id="pMsgDesc"></p><div class="chart-box"><canvas id="pMsg"></canvas></div></div>
     </div>
 
-    <!-- Store installs -->
-    <div class="section"><h2>Store installs</h2></div>
-    <div class="kpis" id="storeKpis"></div>
-    <div class="grid g2" style="margin-top:16px">
-      <div class="card"><h3>Device installs by platform</h3><p class="desc">Real devices that opened the app &amp; registered for push</p><div class="chart-box"><canvas id="devPlatform"></canvas></div></div>
-      <div class="card"><h3>Accounts by platform</h3><p class="desc">Distinct signed-in accounts per platform</p><div class="chart-box"><canvas id="acctPlatform"></canvas></div></div>
-    </div>
-    <div class="card" id="storeNote" style="margin-top:16px"></div>
-
-    <!-- Growth (all-time) -->
-    <div class="section"><h2>Growth · all time</h2></div>
-    <div class="grid g2">
-      <div class="card"><h3>Cumulative users</h3><p class="desc">Total registered accounts over the last 90 days</p><div class="chart-box"><canvas id="cumUsers"></canvas></div></div>
-      <div class="card"><h3>New signups / day</h3><p class="desc">Last 30 days</p><div class="chart-box"><canvas id="newUsers"></canvas></div></div>
-    </div>
-
     <!-- Retention -->
-    <div class="section"><h2>Retention</h2></div>
-    <div class="card">
-      <div class="rcards" id="retCards"></div>
-      <h3>Weekly cohorts</h3>
-      <p class="desc">% of each signup-week cohort active in later weeks (active = message, emotion, check-in or session).</p>
-      <div style="overflow-x:auto"><table class="heat" id="cohortTable"></table></div>
-    </div>
-
-    <!-- Funnel + Engagement -->
-    <div class="section"><h2>Pairing funnel &amp; engagement</h2></div>
+    <div class="section"><span class="em">🔁</span><h2>Retention</h2><span class="hint">do people come back?</span></div>
     <div class="grid g2">
-      <div class="card"><h3>Activation funnel</h3><p class="desc">User journey from signup to active paired sessions</p><div class="funnel" id="funnel"></div></div>
-      <div class="card"><h3>Sessions by status</h3><p class="desc">Every session ever created</p><div class="chart-box"><canvas id="sessStatus"></canvas></div></div>
-      <div class="card"><h3>Messages by sender</h3><p class="desc">Who is doing the talking</p><div class="chart-box"><canvas id="msgSender"></canvas></div></div>
-      <div class="card"><h3>Session type</h3><p class="desc">Private space vs joint Bridge</p><div class="chart-box"><canvas id="sessType"></canvas></div></div>
+      <div class="card"><div class="rcards" id="retCards"></div><h3>Retention curve</h3><p class="desc">Average % of a cohort still active, by weeks since signup</p><div class="chart-box"><canvas id="retCurve"></canvas></div></div>
+      <div class="card"><h3>Weekly cohorts</h3><p class="desc">Each row is a signup week; darker = more of that cohort still active</p><div style="overflow-x:auto"><table class="heat" id="cohortTable"></table></div></div>
     </div>
 
-    <!-- Distributions -->
-    <div class="section"><h2>Who is using naata</h2></div>
+    <!-- Activation funnel -->
+    <div class="section"><span class="em">🫂</span><h2>Activation funnel</h2><span class="hint">signup → paired → talking</span></div>
+    <div class="card"><div class="funnel" id="funnel"></div></div>
+
+    <!-- Breakdowns -->
+    <div class="section"><span class="em">🍩</span><h2>Breakdowns</h2><span class="hint">how usage splits</span></div>
     <div class="grid g3">
-      <div class="card"><h3>Platform</h3><p class="desc">Device installs (push tokens)</p><div class="chart-box"><canvas id="platform"></canvas></div></div>
-      <div class="card"><h3>Language</h3><p class="desc">User language preference</p><div class="chart-box"><canvas id="lang"></canvas></div></div>
-      <div class="card"><h3>Gender</h3><p class="desc">Self-reported</p><div class="chart-box"><canvas id="gender"></canvas></div></div>
+      <div class="card"><h3>Sessions by status</h3><div class="chart-box"><canvas id="sessStatus"></canvas></div></div>
+      <div class="card"><h3>Private vs joint</h3><div class="chart-box"><canvas id="sessType"></canvas></div></div>
+      <div class="card"><h3>Messages by sender</h3><div class="chart-box"><canvas id="msgSender"></canvas></div></div>
+      <div class="card"><h3>Platform</h3><div class="chart-box"><canvas id="platform"></canvas></div></div>
+      <div class="card"><h3>Language</h3><div class="chart-box"><canvas id="lang"></canvas></div></div>
+      <div class="card"><h3>Gender</h3><div class="chart-box"><canvas id="gender"></canvas></div></div>
     </div>
 
-    <!-- Emotion + checkins -->
-    <div class="section"><h2>Emotional signal</h2></div>
+    <!-- Emotional signal -->
+    <div class="section"><span class="em">💗</span><h2>Emotional signal</h2><span class="hint">what people feel in-app</span></div>
     <div class="grid g2">
       <div class="card"><h3>Top emotions logged</h3><p class="desc" id="emoDesc"></p><div class="chart-box tall"><canvas id="emotions"></canvas></div></div>
       <div class="card"><h3>Daily check-in moods</h3><p class="desc" id="checkinDesc"></p><div class="chart-box tall"><canvas id="checkins"></canvas></div></div>
     </div>
 
-    <!-- Raw tables -->
-    <div class="section"><h2>Details</h2></div>
+    <!-- Store installs -->
+    <div class="section"><span class="em">📲</span><h2>Store installs</h2><span class="hint">real device &amp; account reach</span></div>
+    <div class="kpis mini-kpis" id="storeKpis"></div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card"><h3>Device installs by platform</h3><p class="desc">Real devices that opened naata &amp; registered for push</p><div class="chart-box"><canvas id="devPlatform"></canvas></div></div>
+      <div class="card"><h3>Accounts by platform</h3><p class="desc">Distinct signed-in accounts per platform</p><div class="chart-box"><canvas id="acctPlatform"></canvas></div></div>
+    </div>
+    <div class="card" id="storeNote" style="margin-top:16px"></div>
+
+    <!-- Details -->
+    <div class="section"><span class="em">📋</span><h2>Details</h2></div>
     <div class="grid g3">
-      <div class="card"><h3>App versions</h3><div id="versions"></div></div>
-      <div class="card"><h3>Relationship types</h3><div id="reltypes"></div></div>
-      <div class="card"><h3>Streaks</h3><div id="streaks"></div></div>
+      <div class="card"><h3>Relationship types</h3><div class="chart-box"><canvas id="reltypes"></canvas></div></div>
+      <div class="card"><h3>Streaks</h3><div id="streaks" style="margin-top:6px"></div></div>
+      <div class="card"><h3>App versions</h3><div id="versions" style="margin-top:6px"></div></div>
     </div>
 
     <div class="card" style="margin-top:16px">
-      <h3>Notes on the numbers</h3>
-      <div id="notes" class="note"></div>
+      <h3>Notes on the numbers</h3><div id="notes" class="note"></div>
     </div>
   </div>
-  <footer>naata.ai · internal · figures computed live from the production database</footer>
+  <footer>naata.ai · internal · every figure computed live from the production database</footer>
 </div>
 
 <script>
 const API_BASE = "https://naata-backend-483381158187.asia-south1.run.app";
-const PALETTE = ["#C2714F","#7A8B5C","#D4903E","#a9856b","#5c8a8a","#b56a7a","#8a7d5c","#6a7a9a","#9a6a5c","#7a9a6a","#c2a04f","#8a6a9a"];
-const TERRA="#C2714F", SAGE="#7A8B5C", OCHRE="#D4903E", INK="#2c2320", MUTED="#8a7d73", LINE="#e7dccd";
-let charts = {};
+/* Single-hue brand colors for magnitude charts */
+const TERRA="#C2714F", SAGE="#7A8B5C", OCHRE="#D4903E", INK="#2b2320", MUTED="#8f8378", LINE="#ece2d3", SURFACE="#fffdfa";
+/* Validated colorblind-safe categorical set (dataviz skill) — for identity doughnuts */
+const CAT=["#eb6834","#2a78d6","#1baf7a","#eda100","#e87ba4","#4a3aa7","#e34948","#6b7280"];
+let charts={}, lastData=null, firstRender=true;
 
+/* ---------- Chart.js global defaults ---------- */
+if(window.Chart){
+  Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif";
+  Chart.defaults.font.size=11.5; Chart.defaults.color=MUTED;
+  Chart.defaults.plugins.tooltip.backgroundColor="rgba(43,35,32,.94)";
+  Chart.defaults.plugins.tooltip.padding=10; Chart.defaults.plugins.tooltip.cornerRadius=9;
+  Chart.defaults.plugins.tooltip.titleFont={weight:'600'}; Chart.defaults.plugins.tooltip.boxPadding=5;
+}
+
+/* ---------- auth ---------- */
 function login(){
-  const t = document.getElementById('token').value.trim();
+  const t=document.getElementById('token').value.trim();
   if(!t){ document.getElementById('gateErr').textContent="Enter a token."; return; }
-  sessionStorage.setItem('naata_admin_token', t);
-  document.getElementById('gateErr').textContent="";
-  showApp(); load();
+  sessionStorage.setItem('naata_admin_token',t);
+  document.getElementById('gateErr').textContent=""; showApp(); setPreset(30);
 }
 function logout(){ sessionStorage.removeItem('naata_admin_token'); location.reload(); }
 function showApp(){ document.getElementById('gate').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); }
 
-/* ---------- date range state ---------- */
-let lastData = null;
+/* ---------- date range ---------- */
 function fmtDate(d){ return d.toISOString().slice(0,10); }
 function setPreset(days){
-  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active', c.dataset.days==String(days)));
-  const end = new Date();
-  let start;
-  if(days==='all'){ start = new Date('2026-01-01'); }
-  else { start = new Date(); start.setDate(end.getDate() - (Number(days)-1)); }
-  document.getElementById('startDate').value = fmtDate(start);
-  document.getElementById('endDate').value = fmtDate(end);
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active',c.dataset.days==String(days)));
+  const end=new Date(); let start;
+  if(days==='all'){ start=new Date('2026-01-01'); }
+  else { start=new Date(); start.setDate(end.getDate()-(Number(days)-1)); }
+  document.getElementById('startDate').value=fmtDate(start);
+  document.getElementById('endDate').value=fmtDate(end);
   load();
 }
-function customRange(){
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  load();
+function customRange(){ document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active')); load(); }
+
+async function fetchStats(qs){
+  const token=sessionStorage.getItem('naata_admin_token');
+  const res=await fetch(API_BASE+"/api/admin/stats"+qs,{headers:{"Authorization":"Bearer "+token}});
+  if(res.status===401) throw new Error("Invalid token — access denied.");
+  if(res.status===503) throw new Error("Admin analytics not configured on the server yet.");
+  if(!res.ok) throw new Error("Server error ("+res.status+").");
+  return res.json();
 }
 
 async function load(){
-  const token = sessionStorage.getItem('naata_admin_token');
+  const token=sessionStorage.getItem('naata_admin_token');
   if(!token){ location.reload(); return; }
   document.getElementById('loading').classList.remove('hidden');
   document.getElementById('content').classList.add('hidden');
-  const s = document.getElementById('startDate').value;
-  const e = document.getElementById('endDate').value;
-  const qs = (s&&e) ? ("?start="+s+"&end="+e) : "";
+  const s=document.getElementById('startDate').value, e=document.getElementById('endDate').value;
+  const qs=(s&&e)?("?start="+s+"&end="+e):"";
   try{
-    const res = await fetch(API_BASE + "/api/admin/stats" + qs, { headers:{ "Authorization":"Bearer "+token }});
-    if(res.status===401){ throw new Error("Invalid token — access denied."); }
-    if(res.status===503){ throw new Error("Admin analytics not configured on the server yet."); }
-    if(!res.ok){ throw new Error("Server error ("+res.status+")."); }
-    const data = await res.json();
-    lastData = data;
-    render(data);
+    const data=await fetchStats(qs);
+    lastData=data;
+    // previous equal-length period for trend arrows (real data)
+    let prev=null;
+    if(s&&e){
+      try{
+        const sd=new Date(s), ed=new Date(e);
+        const len=Math.round((ed-sd)/86400000)+1;
+        const pe=new Date(sd); pe.setDate(sd.getDate()-1);
+        const ps=new Date(pe); ps.setDate(pe.getDate()-(len-1));
+        prev=(await fetchStats("?start="+fmtDate(ps)+"&end="+fmtDate(pe))).period.counts;
+      }catch(_){}
+    }
+    render(data,prev);
     document.getElementById('loading').classList.add('hidden');
     document.getElementById('content').classList.remove('hidden');
-  }catch(e){
-    document.getElementById('loading').innerHTML =
-      '<div style="color:var(--bad)">'+e.message+'</div>'+
+  }catch(err){
+    document.getElementById('loading').innerHTML=
+      '<div style="color:var(--bad)">'+err.message+'</div>'+
       '<button class="btn" style="margin-top:14px" onclick="logout()">Re-enter token</button>';
   }
 }
 
-/* ---------- render helpers ---------- */
-const nf = n => (n==null?"—":Number(n).toLocaleString());
-function kpi(v,l,s){ return `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div>${s?`<div class="s">${s}</div>`:''}</div>`; }
-function accentKpi(v,l,s){ return `<div class="kpi accent"><div class="v">${v}</div><div class="l">${l}</div>${s?`<div class="s">${s}</div>`:''}</div>`; }
+/* ---------- helpers ---------- */
+const nf=n=>(n==null?"—":Number(n).toLocaleString());
+const UNSPEC=new Set(["unknown","unspecified","not_specified","none","null",""]);
+function pretty(k){ if(k==null)return"Not specified"; const key=String(k).toLowerCase();
+  if(UNSPEC.has(key))return"Not specified"; if(key==="ios")return"iOS"; if(key==="ai")return"AI companion";
+  return String(k).replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase()); }
+function normDist(o){ const m={}; for(const[k,v]of Object.entries(o||{})){const p=pretty(k); m[p]=(m[p]||0)+v;} return m; }
+function allUnspec(o){ const e=Object.entries(normDist(o)); return e.length>0&&e.every(([k])=>k==="Not specified"); }
+function entries(o){ return Object.entries(o||{}).sort((a,b)=>b[1]-a[1]); }
+function destroy(id){ if(charts[id]){charts[id].destroy(); delete charts[id];} }
+function mk(id,cfg){ if(!window.Chart)return; destroy(id); const el=document.getElementById(id); if(el)charts[id]=new Chart(el,cfg); }
+function gradient(ctx,area,color){ const g=ctx.createLinearGradient(0,area.top,0,area.bottom);
+  g.addColorStop(0,color+"38"); g.addColorStop(1,color+"02"); return g; }
 
-function destroy(id){ if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
-function mkChart(id,cfg){ if(!window.Chart) return; destroy(id); const el=document.getElementById(id); if(el) charts[id]=new Chart(el,cfg); }
+function trendChip(cur,prev){
+  if(prev==null||prev===0) return cur>0?`<span class="trend up">▲ new</span>`:`<span class="trend flat">–</span>`;
+  const pct=Math.round(100*(cur-prev)/prev);
+  if(pct>0) return `<span class="trend up">▲ ${pct}%</span>`;
+  if(pct<0) return `<span class="trend down">▼ ${Math.abs(pct)}%</span>`;
+  return `<span class="trend flat">– 0%</span>`;
+}
 
-const gridCfg = { grid:{color:"rgba(0,0,0,0.04)"}, ticks:{color:MUTED,font:{size:11}} };
-function lineChart(id,labels,vals,color,fill){
-  mkChart(id,{type:'line',data:{labels,datasets:[{data:vals,borderColor:color,backgroundColor:fill||'rgba(194,113,79,.12)',
-    fill:true,tension:.35,pointRadius:0,borderWidth:2}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{...gridCfg,ticks:{...gridCfg.ticks,maxTicksLimit:8}},y:{...gridCfg,beginAtZero:true}}}});
+/* count-up animation (first render only) */
+function countUp(el,target){
+  if(!firstRender||isNaN(target)){ el.textContent=nf(target); return; }
+  const dur=650, t0=performance.now();
+  (function step(t){ const p=Math.min(1,(t-t0)/dur); const e=1-Math.pow(1-p,3);
+    el.textContent=nf(Math.round(target*e)); if(p<1)requestAnimationFrame(step); })(t0);
 }
-function barChart(id,labels,vals,color){
-  mkChart(id,{type:'bar',data:{labels,datasets:[{data:vals,backgroundColor:color||TERRA,borderRadius:5,maxBarThickness:26}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{...gridCfg,ticks:{...gridCfg.ticks,maxTicksLimit:10}},y:{...gridCfg,beginAtZero:true}}}});
-}
-function hbarChart(id,labels,vals){
-  mkChart(id,{type:'bar',data:{labels,datasets:[{data:vals,backgroundColor:labels.map((_,i)=>PALETTE[i%PALETTE.length]),borderRadius:5}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{...gridCfg,beginAtZero:true},y:gridCfg}}});
-}
-function doughnut(id,labels,vals){
-  mkChart(id,{type:'doughnut',data:{labels,datasets:[{data:vals,backgroundColor:labels.map((_,i)=>PALETTE[i%PALETTE.length]),borderWidth:2,borderColor:"#fffdf9"}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{color:INK,font:{size:11},boxWidth:12,padding:10}}}}});
-}
-function entries(obj){ return Object.entries(obj||{}).sort((a,b)=>b[1]-a[1]); }
-/* Title-case a snake_case / lowercase key; map empty/unknown synonyms to a clean label */
-const UNSPEC = new Set(["unknown","unspecified","not_specified","none","null",""]);
-function pretty(k){
-  if(k==null) return "Not specified";
-  const key=String(k).toLowerCase();
-  if(UNSPEC.has(key)) return "Not specified";
-  if(key==="ios") return "iOS";
-  if(key==="ai") return "AI companion";
-  return String(k).replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase());
-}
-/* Normalize a distribution: merge synonym buckets, prettify labels, keep counts exact */
-function normDist(obj){
-  const merged={};
-  for(const [k,v] of Object.entries(obj||{})){ const p=pretty(k); merged[p]=(merged[p]||0)+v; }
-  return merged;
-}
-/* Is a distribution entirely "Not specified" (i.e. not really tracked)? */
-function allUnspec(obj){
-  const e=Object.entries(normDist(obj)); return e.length>0 && e.every(([k])=>k==="Not specified");
-}
-function distTable(id,obj,fmt){
-  const el=document.getElementById(id); const e=entries(obj);
-  el.innerHTML = e.length? e.map(([k,v])=>`<div class="distrow"><span class="k">${k}</span><span class="val">${fmt?fmt(v):nf(v)}</span></div>`).join('')
-    : '<div class="note">No data yet.</div>';
-}
-function heatColor(p){ if(p==null) return {bg:'#f4efe6',t:''}; const a=Math.min(1,p/60); return {bg:`rgba(122,139,92,${0.12+a*0.7})`,t:p>=45?'#fff':'#2c2320'}; }
-/* Doughnut from a distribution object, with synonym-merged, prettified labels */
-function distDoughnut(id,obj){ const e=entries(normDist(obj)); doughnut(id, e.map(x=>x[0]), e.map(x=>x[1])); }
-function distHbar(id,obj){ const e=entries(normDist(obj)); hbarChart(id, e.map(x=>x[0]), e.map(x=>x[1])); }
 
-/* ---------- main render ---------- */
-function render(d){
-  document.getElementById('updated').textContent =
-    "Last updated " + new Date(d.generated_at).toLocaleString() + " · data is live";
+/* ---------- chart builders ---------- */
+const axis={grid:{color:"rgba(120,90,60,.06)",drawBorder:false},border:{display:false},ticks:{color:MUTED,maxTicksLimit:7,font:{size:10.5}}};
+function areaChart(id,labels,vals,color){
+  mk(id,{type:'line',data:{labels,datasets:[{label:'Users',data:vals,borderColor:color,borderWidth:2.4,
+    tension:.35,pointRadius:0,pointHoverRadius:5,pointHoverBackgroundColor:color,pointHoverBorderColor:'#fff',pointHoverBorderWidth:2,
+    fill:true,backgroundColor:c=>{const{ctx,chartArea}=c.chart; return chartArea?gradient(ctx,chartArea,color):color+"22";}}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+nf(c.parsed.y)+' total users'}}},
+      scales:{x:axis,y:{...axis,beginAtZero:true}}}});
+}
+function barChart(id,labels,vals,color,unit){
+  mk(id,{type:'bar',data:{labels,datasets:[{label:unit||'',data:vals,backgroundColor:color,hoverBackgroundColor:color,
+    borderRadius:4,borderSkipped:false,maxBarThickness:24}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>' '+nf(c.parsed.y)+(unit?' '+unit:'')}}},
+      scales:{x:axis,y:{...axis,beginAtZero:true,ticks:{...axis.ticks,precision:0}}}}});
+}
+function seqHbar(id,labels,vals){
+  // magnitude ranking → single-hue terracotta ramp (dark = biggest)
+  const max=Math.max(...vals,1);
+  const cols=vals.map(v=>{const t=0.35+0.6*(v/max); return `rgba(194,113,79,${t.toFixed(2)})`;});
+  mk(id,{type:'bar',data:{labels,datasets:[{data:vals,backgroundColor:cols,borderRadius:4,borderSkipped:false}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>' '+nf(c.parsed.x)}}},
+      scales:{x:{...axis,beginAtZero:true},y:{...axis,ticks:{color:INK,font:{size:11.5}}}}}});
+}
+function doughnut(id,obj){
+  const e=entries(normDist(obj)); const labels=e.map(x=>x[0]), vals=e.map(x=>x[1]);
+  const total=vals.reduce((a,b)=>a+b,0)||1;
+  mk(id,{type:'doughnut',data:{labels,datasets:[{data:vals,backgroundColor:labels.map((_,i)=>CAT[i%CAT.length]),
+    borderWidth:2,borderColor:SURFACE,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+      plugins:{legend:{position:'bottom',labels:{color:INK,font:{size:11.5},boxWidth:11,boxHeight:11,padding:11,usePointStyle:true,pointStyle:'circle'}},
+        tooltip:{callbacks:{label:c=>' '+c.label+': '+nf(c.parsed)+' ('+Math.round(100*c.parsed/total)+'%)'}}}}});
+}
+function sparkline(id,vals,color){
+  mk(id,{type:'line',data:{labels:vals.map((_,i)=>i),datasets:[{data:vals,borderColor:color,borderWidth:2,
+    tension:.4,pointRadius:0,fill:true,backgroundColor:c=>{const{ctx,chartArea}=c.chart; return chartArea?gradient(ctx,chartArea,color):'transparent';}}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},
+      scales:{x:{display:false},y:{display:false}},elements:{line:{capBezierPoints:true}}}});
+}
+function gaugeChart(id,pct,color){
+  mk(id,{type:'doughnut',data:{datasets:[{data:[pct,100-pct],backgroundColor:[color,"#efe7d9"],borderWidth:0,circumference:360,rotation:0}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'78%',plugins:{legend:{display:false},tooltip:{enabled:false}}}});
+}
 
-  const t=d.totals;
-  document.getElementById('kpis').innerHTML =
-    accentKpi(nf(t.users),"Registered users") +
-    accentKpi(nf(t.paired_users),"Paired users", t.users?Math.round(100*t.paired_users/t.users)+"% of users":"") +
-    kpi(nf(t.active_couples),"Active couples") +
-    kpi(nf(t.sessions),"Sessions", nf(t.completed_sessions)+" completed") +
-    kpi(nf(t.messages),"Messages", d.engagement.avg_messages_per_session+" / session") +
-    kpi(nf(t.emotion_events),"Emotions logged") +
-    kpi(nf(t.checkins),"Check-ins") +
-    kpi(nf(t.device_installs),"Device installs");
+/* ---------- render ---------- */
+function render(d,prev){
+  document.getElementById('updated').innerHTML=
+    '<span class="live-dot"></span> Live · last updated '+new Date(d.generated_at).toLocaleString();
 
+  const t=d.totals, g=d.growth, en=d.engagement, p=d.period, pc=p.counts;
+
+  /* hero KPIs with sparklines + trend chips */
+  const hero=[
+    {v:t.users,l:"Registered users",spark:g.users_daily_90.map(x=>x.cumulative),col:TERRA,tr:trendChip(pc.new_users,prev&&prev.new_users)},
+    {v:t.active_couples,l:"Active couples",spark:g.couples_daily_30.map(x=>x.cumulative),col:SAGE,tr:trendChip(pc.new_couples,prev&&prev.new_couples)},
+    {v:t.sessions,l:"Sessions",spark:g.sessions_daily_30.map(x=>x.count),col:OCHRE,tr:trendChip(pc.sessions,prev&&prev.sessions)},
+    {v:t.messages,l:"Messages",spark:g.messages_daily_30.map(x=>x.count),col:TERRA,tr:trendChip(pc.messages,prev&&prev.messages)},
+  ];
+  document.getElementById('heroKpis').innerHTML=hero.map((k,i)=>
+    `<div class="kpi hero">${k.tr}<div class="v" id="hv${i}">0</div><div class="l">${k.l}</div><div class="spark"><canvas id="hs${i}"></canvas></div></div>`).join('');
+  hero.forEach((k,i)=>{ countUp(document.getElementById('hv'+i),k.v); sparkline('hs'+i,k.spark,k.col); });
+
+  /* mini KPIs */
+  const mini=[
+    [t.paired_users,"Paired users",t.users?Math.round(100*t.paired_users/t.users)+"% of users":""],
+    [en.avg_messages_per_session,"Msgs / session",""],
+    [t.emotion_events,"Emotions logged",""],
+    [t.checkins,"Check-ins",""],
+    [t.completed_sessions,"Completed sessions",""],
+    [t.device_installs,"Device installs",""],
+  ];
+  document.getElementById('miniKpis').innerHTML=mini.map(([v,l,s])=>
+    `<div class="kpi mini"><div class="v">${nf(v)}</div><div class="l">${l}</div>${s?`<div class="s">${s}</div>`:''}</div>`).join('');
+
+  /* engagement */
   const au=d.active_users;
-  document.getElementById('activeKpis').innerHTML =
-    accentKpi(nf(au.dau),"DAU","active in last 24h") +
-    accentKpi(nf(au.wau),"WAU","active in last 7d") +
-    accentKpi(nf(au.mau),"MAU","active in last 30d") +
-    kpi((au.stickiness!=null?Math.round(au.stickiness*100)+"%":"—"),"Stickiness","DAU / MAU");
+  barChart('activeBar',["DAU (24h)","WAU (7d)","MAU (30d)"],[au.dau,au.wau,au.mau],[TERRA,OCHRE,SAGE],"users");
+  charts['activeBar'] && (charts['activeBar'].data.datasets[0].backgroundColor=[TERRA,OCHRE,SAGE], charts['activeBar'].update());
+  const stick=au.stickiness!=null?Math.round(au.stickiness*100):0;
+  gaugeChart('stickGauge',stick,TERRA);
+  document.getElementById('stickVal').textContent=stick+"%";
+  document.getElementById('stickNote').innerHTML=
+    `<b>${au.dau}</b> of <b>${au.mau}</b> monthly-active users came back today.<br>`+
+    (stick>=20?"Healthy — a good share return daily.":"Room to grow — nudges &amp; streaks can lift this.");
 
-  // ---- this period (date-range driven) ----
-  const p=d.period, pc=p.counts;
-  document.getElementById('periodLabel').textContent = p.start + " → " + p.end + " (" + p.days + " days)";
-  document.getElementById('periodKpis').innerHTML =
-    accentKpi(nf(pc.new_users),"New signups") +
-    accentKpi(nf(pc.active_users),"Active users","engaged in period") +
-    kpi(nf(pc.new_couples),"New couples") +
-    kpi(nf(pc.sessions),"Sessions started") +
-    kpi(nf(pc.messages),"Messages") +
-    kpi(nf(pc.emotions),"Emotions logged") +
-    kpi(nf(pc.checkins),"Check-ins");
-  const pd=p.daily;
-  document.getElementById('pUsersDesc').textContent = nf(pc.new_users)+" total in period";
-  document.getElementById('pSessDesc').textContent = nf(pc.sessions)+" total in period";
-  document.getElementById('pMsgDesc').textContent = nf(pc.messages)+" total in period";
-  barChart('pUsers', pd.users.map(x=>x.date), pd.users.map(x=>x.count), OCHRE);
-  barChart('pSess', pd.sessions.map(x=>x.date), pd.sessions.map(x=>x.count), SAGE);
-  barChart('pMsg', pd.messages.map(x=>x.date), pd.messages.map(x=>x.count), TERRA);
+  /* growth */
+  areaChart('cumUsers',g.users_daily_90.map(x=>x.date),g.users_daily_90.map(x=>x.cumulative),TERRA);
+  barChart('newUsers',g.users_daily_30.map(x=>x.date),g.users_daily_30.map(x=>x.count),OCHRE,"signups");
+  barChart('newCouples',g.couples_daily_30.map(x=>x.date),g.couples_daily_30.map(x=>x.count),SAGE,"couples");
 
-  // ---- store installs ----
-  const si=d.store_installs;
-  document.getElementById('storeKpis').innerHTML =
-    accentKpi(nf(si.device_installs_total),"Device installs","push-registered devices") +
-    kpi(nf(si.accounts_with_device),"Accounts w/ device") +
-    kpi(nf(si.devices_by_platform.ios||0),"iOS devices") +
-    kpi(nf(si.devices_by_platform.android||0),"Android devices") +
-    kpi(si.ios_downloads==null?"—":nf(si.ios_downloads),"iOS downloads", si.store_downloads_connected?"":"needs App Store key") +
-    kpi(si.android_downloads==null?"—":nf(si.android_downloads),"Android downloads", si.store_downloads_connected?"":"needs Play access");
-  distDoughnut('devPlatform', si.devices_by_platform);
-  distDoughnut('acctPlatform', si.accounts_by_platform);
-  document.getElementById('storeNote').innerHTML =
-    '<h3>About these numbers</h3><div class="note">'+
-    '<b>Device installs</b> and <b>accounts</b> above are 100% real — every device that opened naata and registered for '+
-    'notifications, split by platform. They are the closest real signal we hold to "installs".<br>'+
-    '<b>iOS / Android downloads</b> show <b>—</b> because exact store-download totals live in Apple &amp; Google\'s systems. '+
-    'To fill them in, connect an <b>App Store Connect API key</b> (.p8) and <b>Play Console reporting</b> access — then this '+
-    'section switches to live store figures. No estimated numbers are ever shown.</div>';
+  /* selected period */
+  document.getElementById('periodLabel').textContent=p.start+" → "+p.end+" ("+p.days+" days)";
+  const pk=[
+    [pc.new_users,"New signups",trendChip(pc.new_users,prev&&prev.new_users)],
+    [pc.active_users,"Active users",trendChip(pc.active_users,prev&&prev.active_users)],
+    [pc.new_couples,"New couples",trendChip(pc.new_couples,prev&&prev.new_couples)],
+    [pc.sessions,"Sessions",trendChip(pc.sessions,prev&&prev.sessions)],
+    [pc.messages,"Messages",trendChip(pc.messages,prev&&prev.messages)],
+    [pc.emotions,"Emotions",""],
+  ];
+  document.getElementById('periodKpis').innerHTML=pk.map(([v,l,tr])=>
+    `<div class="kpi mini">${tr||''}<div class="v">${nf(v)}</div><div class="l">${l}</div></div>`).join('');
+  document.getElementById('pUsersDesc').textContent=nf(pc.new_users)+" total in period";
+  document.getElementById('pSessDesc').textContent=nf(pc.sessions)+" total in period";
+  document.getElementById('pMsgDesc').textContent=nf(pc.messages)+" total in period";
+  barChart('pUsers',p.daily.users.map(x=>x.date),p.daily.users.map(x=>x.count),OCHRE,"signups");
+  barChart('pSess',p.daily.sessions.map(x=>x.date),p.daily.sessions.map(x=>x.count),SAGE,"sessions");
+  barChart('pMsg',p.daily.messages.map(x=>x.date),p.daily.messages.map(x=>x.count),TERRA,"messages");
 
-  // growth (all-time)
-  const g=d.growth;
-  lineChart('cumUsers', g.users_daily_90.map(x=>x.date), g.users_daily_90.map(x=>x.cumulative), TERRA);
-  barChart('newUsers', g.users_daily_30.map(x=>x.date), g.users_daily_30.map(x=>x.count), OCHRE);
-
-  // retention
+  /* retention */
   const r=d.retention;
-  document.getElementById('retCards').innerHTML =
+  document.getElementById('retCards').innerHTML=
     `<div class="rcard"><div class="v">${r.d1.rate}%</div><div class="l">Day 1 · ${r.d1.retained}/${r.d1.eligible}</div></div>`+
     `<div class="rcard"><div class="v">${r.d7.rate}%</div><div class="l">Day 7 · ${r.d7.retained}/${r.d7.eligible}</div></div>`+
     `<div class="rcard"><div class="v">${r.d30.rate}%</div><div class="l">Day 30 · ${r.d30.retained}/${r.d30.eligible}</div></div>`;
+  renderRetCurve(r.cohorts);
   renderCohorts(r.cohorts);
 
-  // funnel
+  /* funnel */
   renderFunnel(d.pairing_funnel);
 
-  // engagement doughnuts
-  const en=d.engagement;
-  distDoughnut('sessStatus', en.sessions_by_status);
-  distDoughnut('msgSender', en.messages_by_sender);
-  distDoughnut('sessType', en.sessions_by_type);
+  /* breakdowns */
+  doughnut('sessStatus',en.sessions_by_status);
+  doughnut('sessType',en.sessions_by_type);
+  doughnut('msgSender',en.messages_by_sender);
+  doughnut('platform',d.distributions.platforms);
+  doughnut('lang',d.distributions.languages);
+  doughnut('gender',d.distributions.genders);
 
-  // distributions
-  const di=d.distributions;
-  distDoughnut('platform', di.platforms);
-  distDoughnut('lang', di.languages);
-  distDoughnut('gender', di.genders);
+  /* emotions + checkins */
+  const em=entries(normDist(d.emotions.by_type));
+  document.getElementById('emoDesc').textContent=d.emotions.total+" logged · avg intensity "+(d.emotions.avg_score??"—");
+  seqHbar('emotions',em.map(x=>x[0]),em.map(x=>x[1]));
+  const ck=entries(normDist(d.checkins.by_mood));
+  document.getElementById('checkinDesc').textContent=d.checkins.total+" check-ins";
+  seqHbar('checkins',ck.map(x=>x[0]),ck.map(x=>x[1]));
 
-  // emotions + checkins
-  document.getElementById('emoDesc').textContent =
-    d.emotions.total+" logged · avg intensity "+(d.emotions.avg_score??"—");
-  distHbar('emotions', d.emotions.by_type);
-  document.getElementById('checkinDesc').textContent = d.checkins.total+" check-ins";
-  distHbar('checkins', d.checkins.by_mood);
+  /* store */
+  const si=d.store_installs;
+  document.getElementById('storeKpis').innerHTML=
+    `<div class="kpi mini"><div class="v">${nf(si.device_installs_total)}</div><div class="l">Device installs</div></div>`+
+    `<div class="kpi mini"><div class="v">${nf(si.accounts_with_device)}</div><div class="l">Accounts w/ device</div></div>`+
+    `<div class="kpi mini"><div class="v">${nf(si.devices_by_platform.ios||0)}</div><div class="l">iOS devices</div></div>`+
+    `<div class="kpi mini"><div class="v">${nf(si.devices_by_platform.android||0)}</div><div class="l">Android devices</div></div>`+
+    `<div class="kpi mini"><div class="v">${si.ios_downloads==null?"—":nf(si.ios_downloads)}</div><div class="l">iOS downloads</div><div class="s" style="color:var(--faint)">${si.store_downloads_connected?"":"needs App Store key"}</div></div>`+
+    `<div class="kpi mini"><div class="v">${si.android_downloads==null?"—":nf(si.android_downloads)}</div><div class="l">Android downloads</div><div class="s" style="color:var(--faint)">${si.store_downloads_connected?"":"needs Play access"}</div></div>`;
+  doughnut('devPlatform',si.devices_by_platform);
+  doughnut('acctPlatform',si.accounts_by_platform);
+  document.getElementById('storeNote').innerHTML=
+    '<h3>About these numbers</h3><div class="note"><b>Device installs</b> and <b>accounts</b> are 100% real — every device that opened naata and '+
+    'registered for notifications, split by platform: the closest real signal we hold to "installs". '+
+    '<b>iOS / Android downloads</b> show <b>—</b> because exact store totals live in Apple &amp; Google\'s systems; connect an '+
+    '<b>App Store Connect API key</b> (.p8) and <b>Play Console reporting</b> to fill them. No estimated numbers are ever shown.</div>';
 
-  // detail tables
-  const verObj = allUnspec(di.app_versions)
-    ? null : normDist(di.app_versions);
-  document.getElementById('versions').innerHTML = verObj
-    ? entries(verObj).map(([k,v])=>`<div class="distrow"><span class="k">${k}</span><span class="val">${nf(v)}</span></div>`).join('')
-    : '<div class="note">Not tracked yet — the app doesn\'t report its version on login. (Add <code>app_version</code> on auth to populate this.)</div>';
-  distTable('reltypes', normDist(di.relationship_types));
+  /* details */
+  doughnut('reltypes',d.distributions.relationship_types);
   const s=d.streaks;
-  document.getElementById('streaks').innerHTML =
+  document.getElementById('streaks').innerHTML=
     `<div class="distrow"><span class="k">Longest streak</span><span class="val">${s.max} days</span></div>`+
     `<div class="distrow"><span class="k">Couples with a streak</span><span class="val">${s.couples_with_streak}</span></div>`+
     `<div class="distrow"><span class="k">Avg active streak</span><span class="val">${s.avg_active} days</span></div>`;
+  const verObj=allUnspec(d.distributions.app_versions)?null:normDist(d.distributions.app_versions);
+  document.getElementById('versions').innerHTML=verObj
+    ? entries(verObj).map(([k,v])=>`<div class="distrow"><span class="k">${k}</span><span class="val">${nf(v)}</span></div>`).join('')
+    : '<div class="note">Not tracked yet — the app doesn\'t report its version on login.</div>';
 
-  document.getElementById('notes').innerHTML = Object.values(d.notes||{}).map(x=>"• "+x).join("<br>");
+  document.getElementById('notes').innerHTML=Object.values(d.notes||{}).map(x=>"• "+x).join("<br>");
+  firstRender=false;
+}
+
+function renderRetCurve(cohorts){
+  const W=(cohorts[0]&&cohorts[0].weeks.length)||8;
+  const avg=[];
+  for(let k=0;k<W;k++){ let num=0,den=0;
+    cohorts.forEach(c=>{ if(c.weeks[k]!=null){ num+=c.weeks[k]*c.size; den+=c.size; }});
+    avg.push(den?Math.round(num/den):null);
+  }
+  mk('retCurve',{type:'line',data:{labels:avg.map((_,i)=>"Week "+i),datasets:[{label:'% active',data:avg,
+    borderColor:SAGE,borderWidth:2.4,tension:.35,pointRadius:3,pointBackgroundColor:SAGE,spanGaps:true,
+    fill:true,backgroundColor:c=>{const{ctx,chartArea}=c.chart; return chartArea?gradient(ctx,chartArea,SAGE):'transparent';}}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>' '+(c.parsed.y==null?'—':c.parsed.y+'% still active')}}},
+      scales:{x:axis,y:{...axis,beginAtZero:true,max:100,ticks:{...axis.ticks,callback:v=>v+'%'}}}}});
 }
 
 function renderFunnel(f){
-  const steps=[
-    ["Registered", f.registered],
-    ["Completed onboarding", f.onboarded],
-    ["Paired with partner", f.in_couple],
-    ["In a couple with sessions", f.in_active_session_couple],
-  ];
+  const steps=[["Registered",f.registered],["Completed onboarding",f.onboarded],
+    ["Paired with partner",f.in_couple],["In a couple with sessions",f.in_active_session_couple]];
   const max=Math.max(1,...steps.map(s=>s[1]));
-  document.getElementById('funnel').innerHTML = steps.map(([lab,v])=>{
-    const w=Math.max(6, Math.round(100*v/max));
-    const pct=f.registered?Math.round(100*v/f.registered)+"%":"";
+  document.getElementById('funnel').innerHTML=steps.map(([lab,v],i)=>{
+    const w=Math.max(7,Math.round(100*v/max));
+    const pctReg=f.registered?Math.round(100*v/f.registered):0;
+    const drop=i>0?steps[i-1][1]-v:0;
     return `<div class="frow"><div class="lab">${lab}</div>`+
-      `<div class="bar" style="width:${w}%">${v}</div><div class="pct">${pct}</div></div>`;
+      `<div class="track"><div class="bar" style="width:${w}%">${v}</div></div>`+
+      `<div class="pct"><b>${pctReg}%</b>${i>0?`<br>–${drop} drop`:''}</div></div>`;
   }).join('');
 }
 
 function renderCohorts(cohorts){
   if(!cohorts||!cohorts.length){ document.getElementById('cohortTable').innerHTML="<tr><td class='note'>No cohorts yet.</td></tr>"; return; }
   const W=cohorts[0].weeks.length;
-  let head="<tr><th>Cohort week</th><th>Users</th>";
-  for(let i=0;i<W;i++) head+=`<th>W${i}</th>`;
-  head+="</tr>";
+  let head="<tr><th style='text-align:left'>Cohort</th><th>n</th>";
+  for(let i=0;i<W;i++) head+=`<th>W${i}</th>`; head+="</tr>";
   let rows="";
   cohorts.slice().reverse().forEach(c=>{
-    rows+=`<tr><td class="lab">${c.cohort}</td><td class="c">${c.size}</td>`;
-    c.weeks.forEach(p=>{
-      const col=heatColor(p);
-      rows+=`<td class="c" style="background:${col.bg};color:${col.t}">${p==null?"":p+"%"}</td>`;
+    rows+=`<tr><td class="lab">${c.cohort}</td><td class="sz">${c.size}</td>`;
+    c.weeks.forEach(pv=>{
+      if(pv==null){ rows+=`<td style="background:#f6f1e8;color:#ccc">·</td>`; return; }
+      const a=Math.min(1,pv/70); const bg=`rgba(122,139,92,${(0.10+a*0.78).toFixed(2)})`; const t=pv>=42?'#fff':'#3a2f28';
+      rows+=`<td style="background:${bg};color:${t}">${pv}%</td>`;
     });
     rows+="</tr>";
   });
   document.getElementById('cohortTable').innerHTML=head+rows;
 }
 
-/* ---------- CSV export ---------- */
+/* ---------- CSV ---------- */
 function exportCSV(){
-  const d=lastData; if(!d){ return; }
-  const rows=[];
-  const push=(section,metric,value)=>rows.push([section,metric,value]);
-  const t=d.totals, au=d.active_users, si=d.store_installs, p=d.period, r=d.retention;
-  push("meta","generated_at",d.generated_at);
-  push("meta","period_start",p.start); push("meta","period_end",p.end);
+  const d=lastData; if(!d)return;
+  const rows=[]; const push=(s,m,v)=>rows.push([s,m,v]);
+  const t=d.totals,au=d.active_users,si=d.store_installs,p=d.period,r=d.retention;
+  push("meta","generated_at",d.generated_at); push("meta","period_start",p.start); push("meta","period_end",p.end);
   Object.entries(t).forEach(([k,v])=>push("totals",k,v));
   Object.entries(au).forEach(([k,v])=>push("active_users",k,v));
   Object.entries(p.counts).forEach(([k,v])=>push("period",k,v));
@@ -526,23 +627,16 @@ function exportCSV(){
   Object.entries(si.devices_by_platform).forEach(([k,v])=>push("device_installs",k,v));
   Object.entries(si.accounts_by_platform).forEach(([k,v])=>push("accounts_by_platform",k,v));
   Object.entries(d.pairing_funnel).forEach(([k,v])=>push("funnel",k,v));
-  // daily series (period)
   p.daily.users.forEach(x=>push("daily_new_users",x.date,x.count));
   p.daily.sessions.forEach(x=>push("daily_sessions",x.date,x.count));
   p.daily.messages.forEach(x=>push("daily_messages",x.date,x.count));
-  // retention cohorts
   r.cohorts.forEach(c=>c.weeks.forEach((w,i)=>{ if(w!=null) push("cohort_"+c.cohort,"W"+i+"_pct",w); }));
-  const csv="section,metric,value\n"+rows.map(r=>r.map(c=>{
-    const s=String(c); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
-  }).join(",")).join("\n");
-  const blob=new Blob([csv],{type:"text/csv"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="naata-stats_"+p.start+"_to_"+p.end+".csv";
-  a.click(); URL.revokeObjectURL(a.href);
+  const csv="section,metric,value\n"+rows.map(r=>r.map(c=>{const s=String(c); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}).join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv"}); const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download="naata-stats_"+p.start+"_to_"+p.end+".csv"; a.click(); URL.revokeObjectURL(a.href);
 }
 
-/* auto-login if token already stored */
+/* auto-login */
 if(sessionStorage.getItem('naata_admin_token')){ showApp(); setPreset(30); }
 </script>
 </body>
