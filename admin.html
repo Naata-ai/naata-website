@@ -330,7 +330,8 @@ async function fetchStats(qs){
   const res=await fetch(API_BASE+"/api/admin/stats"+qs,{headers:{"Authorization":"Bearer "+token}});
   if(res.status===401) throw new Error("Invalid token — access denied.");
   if(res.status===503) throw new Error("Admin analytics not configured on the server yet.");
-  if(!res.ok) throw new Error("Server error ("+res.status+").");
+  if(res.status===404) throw new Error("Analytics endpoint not found (404) — the backend may have been redeployed without the admin route. It'll be restored shortly.");
+  if(!res.ok) throw new Error("Server error ("+res.status+"). Try Refresh in a moment.");
   return res.json();
 }
 
