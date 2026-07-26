@@ -140,6 +140,19 @@
   .rcard .v{font-size:24px;font-weight:760;letter-spacing:-.02em}
   .rcard .l{font-size:11px;color:var(--muted);margin-top:3px}
 
+  /* ---------- signup table ---------- */
+  table.sign{border-collapse:collapse;width:100%;font-size:12.5px}
+  table.sign th{color:var(--muted);font-weight:600;font-size:11px;text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.04em}
+  table.sign td{padding:8px 10px;border-bottom:1px dashed var(--line);white-space:nowrap}
+  table.sign tr:last-child td{border-bottom:0}
+  .sig{display:inline-block;width:18px;text-align:center}
+  .chip-v{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:650}
+  .chip-v.human{background:rgba(79,138,82,.13);color:var(--good)}
+  .chip-v.watch{background:rgba(212,144,62,.15);color:#a06a20}
+  .chip-v.suspicious{background:rgba(200,90,76,.13);color:var(--bad)}
+  .review-card{background:linear-gradient(135deg,#fbf3e7,#fffdfa)}
+  .stars{color:var(--ochre);letter-spacing:2px;font-size:15px}
+
   /* ---------- misc ---------- */
   .distrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}
   .distrow:last-child{border-bottom:0}
@@ -251,6 +264,12 @@
     <div class="section"><span class="em">🫂</span><h2>Activation funnel</h2><span class="hint">signup → paired → talking</span></div>
     <div class="card"><div class="funnel" id="funnel"></div></div>
 
+    <!-- Recent signups -->
+    <div class="section"><span class="em">🧾</span><h2>Recent signups</h2><span class="hint">human vs bot signals, per signup</span></div>
+    <div class="card" style="overflow-x:auto"><table class="sign" id="signupTable"></table>
+      <div class="note" style="margin-top:10px">Verdict: <b>human</b> = 2+ signals (real device, onboarded, engaged, paired) · <b>watch</b> = 1 · <b>suspicious</b> = 0. Scripted bots also show up as signups seconds apart.</div>
+    </div>
+
     <!-- Breakdowns -->
     <div class="section"><span class="em">🍩</span><h2>Breakdowns</h2><span class="hint">how usage splits</span></div>
     <div class="grid g3">
@@ -278,6 +297,11 @@
     </div>
     <div class="card" id="storeNote" style="margin-top:16px"></div>
 
+    <!-- App Store reviews -->
+    <div class="section"><span class="em">⭐</span><h2>Store reviews</h2><span class="hint">live from Apple's public feed</span></div>
+    <div class="kpis mini-kpis" id="reviewKpis"></div>
+    <div class="grid g2" style="margin-top:16px" id="reviewCards"></div>
+
     <!-- Details -->
     <div class="section"><span class="em">📋</span><h2>Details</h2></div>
     <div class="grid g3">
@@ -290,7 +314,7 @@
       <h3>Notes on the numbers</h3><div id="notes" class="note"></div>
     </div>
   </div>
-  <footer>naata.ai · internal · every figure computed live from the production database · <b>layout v5</b> · data auto-refreshes every 5 min</footer>
+  <footer>naata.ai · internal · every figure computed live from the production database · <b>layout v6</b> · data auto-refreshes every 5 min</footer>
 </div>
 
 <script>
@@ -378,7 +402,7 @@ async function load(silent){
 }
 
 /* ---------- keep the page fresh ---------- */
-const LAYOUT_V=5;
+const LAYOUT_V=6;
 // Live data: re-fetch every 5 minutes while the tab is visible and logged in.
 setInterval(()=>{ if(document.visibilityState==='visible' && sessionStorage.getItem('naata_admin_token') && lastData) load(true); }, 5*60*1000);
 // Page version: check every 10 minutes (and when the tab regains focus) whether
@@ -545,6 +569,8 @@ function render(d,prev){
 
   /* funnel */
   renderFunnel(d.pairing_funnel);
+  renderSignups(d.recent_signups);
+  renderReviews(d.reviews);
 
   /* breakdowns */
   doughnut('sessStatus',en.sessions_by_status);
@@ -608,6 +634,35 @@ function renderRetCurve(cohorts){
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
       tooltip:{callbacks:{label:c=>' '+(c.parsed.y==null?'—':c.parsed.y+'% still active')}}},
       scales:{x:axis,y:{...axis,beginAtZero:true,max:100,ticks:{...axis.ticks,callback:v=>v+'%'}}}}});
+}
+
+function renderReviews(rv){
+  const ios=rv&&rv.ios;
+  const kp=document.getElementById('reviewKpis');
+  if(!ios){
+    kp.innerHTML=`<div class="kpi mini"><div class="v">—</div><div class="l">iOS rating</div><div class="s" style="color:var(--faint)">feed unavailable right now</div></div>`;
+    document.getElementById('reviewCards').innerHTML=''; return;
+  }
+  kp.innerHTML=
+    `<div class="kpi mini"><div class="v">${ios.rating??"—"}★</div><div class="l">iOS rating (India)</div></div>`+
+    `<div class="kpi mini"><div class="v">${nf(ios.rating_count)}</div><div class="l">iOS ratings</div></div>`+
+    `<div class="kpi mini"><div class="v">${ios.store_version||"—"}</div><div class="l">Live store version</div></div>`+
+    `<div class="kpi mini"><div class="v">—</div><div class="l">Play rating</div><div class="s" style="color:var(--faint)">needs Play Console access</div></div>`;
+  document.getElementById('reviewCards').innerHTML=(ios.latest||[]).map(r=>
+    `<div class="card review-card"><div class="stars">${"★".repeat(r.stars)}${"☆".repeat(5-r.stars)}</div>`+
+    `<h3 style="margin-top:6px">${r.title}</h3>`+
+    `<p class="desc" style="margin:6px 0 8px;font-size:13px;color:var(--ink)">"${r.text}"</p>`+
+    `<div class="note">— ${r.author}${r.version?` · v${r.version}`:''} · App Store India</div></div>`
+  ).join('') || '<div class="card"><div class="note">No written reviews yet.</div></div>';
+}
+
+function renderSignups(rows){
+  const t=document.getElementById('signupTable');
+  if(!rows||!rows.length){ t.innerHTML='<tr><td class="note">No signups yet.</td></tr>'; return; }
+  const y=v=>v?'<span class="sig">✅</span>':'<span class="sig" style="opacity:.35">—</span>';
+  t.innerHTML='<tr><th>Signed up (UTC)</th><th>Email</th><th>Device</th><th>Onboarded</th><th>Engaged</th><th>Paired</th><th>Verdict</th></tr>'+
+    rows.map(s=>`<tr><td>${s.signed_up}</td><td>${s.email}</td><td>${y(s.has_device)}</td><td>${y(s.onboarded)}</td><td>${y(s.engaged)}</td><td>${y(s.paired)}</td>`+
+      `<td><span class="chip-v ${s.verdict}">${s.verdict}</span></td></tr>`).join('');
 }
 
 function renderFunnel(f){
