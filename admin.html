@@ -175,7 +175,7 @@
   <div class="gate-card">
     <img src="naata-app-icon-small.png" alt="naata" onerror="this.style.display='none'"/>
     <h1>naata admin</h1>
-    <p>Enter the admin access token to view live analytics.</p>
+    <p>Enter the admin access token once — this device stays signed in until you log out.</p>
     <input id="token" type="password" placeholder="Admin access token" autocomplete="off"
       onkeydown="if(event.key==='Enter')login()"/>
     <button class="primary" onclick="login()">Unlock dashboard</button>
@@ -314,7 +314,7 @@
       <h3>Notes on the numbers</h3><div id="notes" class="note"></div>
     </div>
   </div>
-  <footer>naata.ai · internal · every figure computed live from the production database · <b>layout v6</b> · data auto-refreshes every 5 min</footer>
+  <footer>naata.ai · internal · every figure computed live from the production database · <b>layout v7</b> · data auto-refreshes every 5 min</footer>
 </div>
 
 <script>
@@ -335,13 +335,22 @@ if(window.Chart){
 }
 
 /* ---------- auth ---------- */
+// Token is remembered on this device (localStorage) until you tap Log out.
+// Also accepts a bookmarkable magic link: admin.html#token=... (the fragment
+// never leaves the browser; it's stored then stripped from the URL).
+function getToken(){ return localStorage.getItem('naata_admin_token') || sessionStorage.getItem('naata_admin_token'); }
+function saveToken(t){ localStorage.setItem('naata_admin_token',t); sessionStorage.removeItem('naata_admin_token'); }
+(function(){
+  const m=location.hash.match(/token=([A-Za-z0-9]+)/);
+  if(m){ saveToken(m[1]); history.replaceState(null,'',location.pathname+location.search); }
+})();
 function login(){
   const t=document.getElementById('token').value.trim();
   if(!t){ document.getElementById('gateErr').textContent="Enter a token."; return; }
-  sessionStorage.setItem('naata_admin_token',t);
+  saveToken(t);
   document.getElementById('gateErr').textContent=""; showApp(); setPreset(30);
 }
-function logout(){ sessionStorage.removeItem('naata_admin_token'); location.reload(); }
+function logout(){ localStorage.removeItem('naata_admin_token'); sessionStorage.removeItem('naata_admin_token'); location.reload(); }
 function showApp(){ document.getElementById('gate').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); }
 
 /* ---------- date range ---------- */
@@ -358,7 +367,7 @@ function setPreset(days){
 function customRange(){ document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active')); load(); }
 
 async function fetchStats(qs){
-  const token=sessionStorage.getItem('naata_admin_token');
+  const token=getToken();
   const res=await fetch(API_BASE+"/api/admin/stats"+qs,{headers:{"Authorization":"Bearer "+token}});
   if(res.status===401) throw new Error("Invalid token — access denied.");
   if(res.status===503) throw new Error("Admin analytics not configured on the server yet.");
@@ -368,7 +377,7 @@ async function fetchStats(qs){
 }
 
 async function load(silent){
-  const token=sessionStorage.getItem('naata_admin_token');
+  const token=getToken();
   if(!token){ location.reload(); return; }
   if(!silent){
     document.getElementById('loading').classList.remove('hidden');
@@ -402,9 +411,9 @@ async function load(silent){
 }
 
 /* ---------- keep the page fresh ---------- */
-const LAYOUT_V=6;
+const LAYOUT_V=7;
 // Live data: re-fetch every 5 minutes while the tab is visible and logged in.
-setInterval(()=>{ if(document.visibilityState==='visible' && sessionStorage.getItem('naata_admin_token') && lastData) load(true); }, 5*60*1000);
+setInterval(()=>{ if(document.visibilityState==='visible' && getToken() && lastData) load(true); }, 5*60*1000);
 // Page version: check every 10 minutes (and when the tab regains focus) whether
 // a newer admin.html was published; if so, show a refresh banner.
 async function checkVersion(){
@@ -415,7 +424,7 @@ async function checkVersion(){
   }catch(_){}
 }
 setInterval(checkVersion, 10*60*1000);
-document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'){ checkVersion(); if(sessionStorage.getItem('naata_admin_token') && lastData) load(true); } });
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'){ checkVersion(); if(getToken() && lastData) load(true); } });
 
 /* ---------- helpers ---------- */
 const nf=n=>(n==null?"—":Number(n).toLocaleString());
@@ -722,7 +731,7 @@ function exportCSV(){
 }
 
 /* auto-login */
-if(sessionStorage.getItem('naata_admin_token')){ showApp(); setPreset(30); }
+if(getToken()){ showApp(); setPreset(30); }
 </script>
 </body>
 </html>
