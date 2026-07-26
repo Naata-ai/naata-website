@@ -53,6 +53,9 @@
     font-size:13px;font-weight:550;cursor:pointer;color:var(--ink);transition:background .12s,border .12s}
   .btn:hover{background:#fff;border-color:#dcccb6}
   .updated{color:var(--muted);font-size:12px;margin:12px 4px 12px;display:flex;align-items:center;gap:7px}
+  .ver-banner{background:linear-gradient(90deg,#fbeee0,#fff7ea);border:1px solid #f0dcc6;border-radius:12px;
+    padding:10px 16px;margin:12px 0 4px;font-size:13px;color:var(--ink);display:flex;align-items:center;
+    box-shadow:var(--shadow)}
   .live-dot{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 0 rgba(79,138,82,.6);
     animation:pulse 2s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(79,138,82,.5)}70%{box-shadow:0 0 0 7px rgba(79,138,82,0)}100%{box-shadow:0 0 0 0 rgba(79,138,82,0)}}
@@ -181,6 +184,11 @@
     </div>
   </header>
 
+  <div id="verBanner" class="ver-banner hidden">
+    ✨ A newer version of this dashboard is available.
+    <button class="btn" style="margin-left:10px" onclick="location.href=location.pathname+'?v='+Date.now()">Refresh now</button>
+  </div>
+
   <div class="updated" id="updated"></div>
 
   <div class="rangebar" id="rangebar">
@@ -282,7 +290,7 @@
       <h3>Notes on the numbers</h3><div id="notes" class="note"></div>
     </div>
   </div>
-  <footer>naata.ai · internal · every figure computed live from the production database · <b>layout v3</b> — if you don't see "Selected period" at the top, hard-refresh (Cmd/Ctrl+Shift+R)</footer>
+  <footer>naata.ai · internal · every figure computed live from the production database · <b>layout v4</b> · data auto-refreshes every 5 min</footer>
 </div>
 
 <script>
@@ -335,11 +343,13 @@ async function fetchStats(qs){
   return res.json();
 }
 
-async function load(){
+async function load(silent){
   const token=sessionStorage.getItem('naata_admin_token');
   if(!token){ location.reload(); return; }
-  document.getElementById('loading').classList.remove('hidden');
-  document.getElementById('content').classList.add('hidden');
+  if(!silent){
+    document.getElementById('loading').classList.remove('hidden');
+    document.getElementById('content').classList.add('hidden');
+  }
   const s=document.getElementById('startDate').value, e=document.getElementById('endDate').value;
   const qs=(s&&e)?("?start="+s+"&end="+e):"";
   try{
@@ -360,11 +370,28 @@ async function load(){
     document.getElementById('loading').classList.add('hidden');
     document.getElementById('content').classList.remove('hidden');
   }catch(err){
+    if(silent) return; // background refresh failures stay quiet; next manual action surfaces them
     document.getElementById('loading').innerHTML=
       '<div style="color:var(--bad)">'+err.message+'</div>'+
       '<button class="btn" style="margin-top:14px" onclick="logout()">Re-enter token</button>';
   }
 }
+
+/* ---------- keep the page fresh ---------- */
+const LAYOUT_V=4;
+// Live data: re-fetch every 5 minutes while the tab is visible and logged in.
+setInterval(()=>{ if(document.visibilityState==='visible' && sessionStorage.getItem('naata_admin_token') && lastData) load(true); }, 5*60*1000);
+// Page version: check every 10 minutes (and when the tab regains focus) whether
+// a newer admin.html was published; if so, show a refresh banner.
+async function checkVersion(){
+  try{
+    const res=await fetch(location.pathname,{cache:'no-store'});
+    const m=(await res.text()).match(/layout v(\d+)/);
+    if(m && Number(m[1])>LAYOUT_V) document.getElementById('verBanner').classList.remove('hidden');
+  }catch(_){}
+}
+setInterval(checkVersion, 10*60*1000);
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'){ checkVersion(); if(sessionStorage.getItem('naata_admin_token') && lastData) load(true); } });
 
 /* ---------- helpers ---------- */
 const nf=n=>(n==null?"—":Number(n).toLocaleString());
