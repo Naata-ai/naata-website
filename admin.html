@@ -290,7 +290,7 @@
       <h3>Notes on the numbers</h3><div id="notes" class="note"></div>
     </div>
   </div>
-  <footer>naata.ai · internal · every figure computed live from the production database · <b>layout v4</b> · data auto-refreshes every 5 min</footer>
+  <footer>naata.ai · internal · every figure computed live from the production database · <b>layout v5</b> · data auto-refreshes every 5 min</footer>
 </div>
 
 <script>
@@ -378,7 +378,7 @@ async function load(silent){
 }
 
 /* ---------- keep the page fresh ---------- */
-const LAYOUT_V=4;
+const LAYOUT_V=5;
 // Live data: re-fetch every 5 minutes while the tab is visible and logged in.
 setInterval(()=>{ if(document.visibilityState==='visible' && sessionStorage.getItem('naata_admin_token') && lastData) load(true); }, 5*60*1000);
 // Page version: check every 10 minutes (and when the tab regains focus) whether
@@ -479,12 +479,12 @@ function render(d,prev){
   /* hero KPIs with sparklines + trend chips */
   const hero=[
     {v:t.users,l:"Registered users",spark:g.users_daily_90.map(x=>x.cumulative),col:TERRA,tr:trendChip(pc.new_users,prev&&prev.new_users)},
-    {v:t.active_couples,l:"Active couples",spark:g.couples_daily_30.map(x=>x.cumulative),col:SAGE,tr:trendChip(pc.new_couples,prev&&prev.new_couples)},
+    {v:t.paired_couples??t.active_couples,l:"Paired couples",s:(t.waiting_couples!=null?nf(t.waiting_couples)+" more waiting for partner":""),spark:g.couples_daily_30.map(x=>x.cumulative),col:SAGE,tr:trendChip(pc.new_couples,prev&&prev.new_couples)},
     {v:t.sessions,l:"Sessions",spark:g.sessions_daily_30.map(x=>x.count),col:OCHRE,tr:trendChip(pc.sessions,prev&&prev.sessions)},
     {v:t.messages,l:"Messages",spark:g.messages_daily_30.map(x=>x.count),col:TERRA,tr:trendChip(pc.messages,prev&&prev.messages)},
   ];
   document.getElementById('heroKpis').innerHTML=hero.map((k,i)=>
-    `<div class="kpi hero">${k.tr}<div class="v" id="hv${i}">0</div><div class="l">${k.l}</div><div class="spark"><canvas id="hs${i}"></canvas></div></div>`).join('');
+    `<div class="kpi hero">${k.tr}<div class="v" id="hv${i}">0</div><div class="l">${k.l}</div>${k.s?`<div class="s">${k.s}</div>`:''}<div class="spark"><canvas id="hs${i}"></canvas></div></div>`).join('');
   hero.forEach((k,i)=>{ countUp(document.getElementById('hv'+i),k.v); sparkline('hs'+i,k.spark,k.col); });
 
   /* mini KPIs */
@@ -612,7 +612,9 @@ function renderRetCurve(cohorts){
 
 function renderFunnel(f){
   const steps=[["Registered",f.registered],["Completed onboarding",f.onboarded],
-    ["Paired with partner",f.in_couple],["In a couple with sessions",f.in_active_session_couple]];
+    ["Started pairing",f.in_couple]];
+  if(f.fully_paired!=null) steps.push(["Partner connected",f.fully_paired]);
+  steps.push(["In a couple with sessions",f.in_active_session_couple]);
   const max=Math.max(1,...steps.map(s=>s[1]));
   document.getElementById('funnel').innerHTML=steps.map(([lab,v],i)=>{
     const w=Math.max(7,Math.round(100*v/max));
