@@ -200,8 +200,17 @@
 
   <div id="content" class="hidden">
 
-    <!-- Headline -->
-    <div class="section"><span class="em">✨</span><h2>Headline</h2><span class="hint">the numbers that matter, with 30-day trend</span></div>
+    <!-- This period — driven by the Period selector above -->
+    <div class="section"><span class="em">🗓️</span><h2>Selected period</h2><span class="period-label" id="periodLabel"></span><span class="hint">← these numbers follow the Period buttons above</span></div>
+    <div class="kpis mini-kpis" id="periodKpis"></div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card"><h3>Signups / day</h3><p class="desc" id="pUsersDesc"></p><div class="chart-box"><canvas id="pUsers"></canvas></div></div>
+      <div class="card"><h3>Sessions / day</h3><p class="desc" id="pSessDesc"></p><div class="chart-box"><canvas id="pSess"></canvas></div></div>
+      <div class="card"><h3>Messages / day</h3><p class="desc" id="pMsgDesc"></p><div class="chart-box"><canvas id="pMsg"></canvas></div></div>
+    </div>
+
+    <!-- All-time totals -->
+    <div class="section"><span class="em">✨</span><h2>All-time totals</h2><span class="hint">since launch — these don't change with the period selector; the ▲▼ chips compare the selected period to the one before it</span></div>
     <div class="kpis hero-kpis" id="heroKpis"></div>
     <div class="kpis mini-kpis" id="miniKpis" style="margin-top:14px"></div>
 
@@ -221,15 +230,6 @@
       <div class="card span2"><h3>Cumulative registered users</h3><p class="desc">Total accounts over the last 90 days</p><div class="chart-box hero"><canvas id="cumUsers"></canvas></div></div>
       <div class="card"><h3>New signups / day</h3><p class="desc">Last 30 days</p><div class="chart-box"><canvas id="newUsers"></canvas></div></div>
       <div class="card"><h3>New couples / day</h3><p class="desc">Last 30 days</p><div class="chart-box"><canvas id="newCouples"></canvas></div></div>
-    </div>
-
-    <!-- This period -->
-    <div class="section"><span class="em">🗓️</span><h2>Selected period</h2><span class="period-label" id="periodLabel"></span></div>
-    <div class="kpis mini-kpis" id="periodKpis"></div>
-    <div class="grid g3" style="margin-top:16px">
-      <div class="card"><h3>Signups / day</h3><p class="desc" id="pUsersDesc"></p><div class="chart-box"><canvas id="pUsers"></canvas></div></div>
-      <div class="card"><h3>Sessions / day</h3><p class="desc" id="pSessDesc"></p><div class="chart-box"><canvas id="pSess"></canvas></div></div>
-      <div class="card"><h3>Messages / day</h3><p class="desc" id="pMsgDesc"></p><div class="chart-box"><canvas id="pMsg"></canvas></div></div>
     </div>
 
     <!-- Retention -->
