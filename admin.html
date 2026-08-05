@@ -221,6 +221,13 @@
 
   <div id="content" class="hidden">
 
+    <!-- User-facing errors — the backend error net records every 5xx a user
+         hits (chat, login, pairing…) and this card surfaces them. -->
+    <div class="section"><span class="em">🚨</span><h2>User-facing errors</h2><span class="hint" id="errHint">checking…</span></div>
+    <div class="card span2" style="margin-bottom:16px">
+      <div id="errBody"><p class="desc">Loading error log…</p></div>
+    </div>
+
     <!-- This period — driven by the Period selector above -->
     <div class="section"><span class="em">🗓️</span><h2>Selected period</h2><span class="period-label" id="periodLabel"></span><span class="hint">← these numbers follow the Period buttons above</span></div>
     <div class="kpis mini-kpis" id="periodKpis"></div>
@@ -376,6 +383,34 @@ async function fetchStats(qs){
   return res.json();
 }
 
+async function loadErrors(){
+  const el=document.getElementById('errBody'), hint=document.getElementById('errHint');
+  try{
+    const res=await fetch(API_BASE+"/api/admin/errors",{headers:{"Authorization":"Bearer "+getToken()}});
+    if(!res.ok){ hint.textContent="unavailable"; return; }
+    const d=await res.json();
+    if(!d.configured){
+      hint.textContent="setup needed";
+      el.innerHTML='<p class="desc">Error log not activated yet — run <b>naata-backend/migrations/add_error_events.sql</b> in the Supabase SQL editor once. After that, any error a user hits (chat, login, pairing…) appears here automatically.</p>';
+      return;
+    }
+    if(d.count_24h>0){
+      hint.innerHTML='<b style="color:#c0392b">⚠️ '+d.count_24h+' in the last 24h</b> · '+d.count_7d+' in 7 days';
+    }else{
+      hint.innerHTML='<b style="color:#2e7d32">✓ all clear</b> — none in 24h · '+d.count_7d+' in 7 days';
+    }
+    if(!d.recent.length){ el.innerHTML='<p class="desc">No errors recorded yet. 🎉</p>'; return; }
+    const chips=(d.by_path_24h||[]).map(p=>'<span style="display:inline-block;background:#fdecea;color:#c0392b;border-radius:12px;padding:2px 10px;margin:0 6px 6px 0;font-size:12px">'+p.path+' × '+p.count+'</span>').join('');
+    const rows=d.recent.slice(0,20).map(r=>{
+      const t=(r.created_at||'').replace('T',' ').slice(0,16);
+      const det=(r.detail||'').replace(/</g,'&lt;').slice(0,180);
+      return '<tr><td style="white-space:nowrap;color:#8a7a6d">'+t+'</td><td>'+r.status_code+'</td><td style="white-space:nowrap">'+r.path+'</td><td style="color:#6b5d52">'+det+'</td></tr>';
+    }).join('');
+    el.innerHTML=(chips?('<div style="margin-bottom:8px">'+chips+'</div>'):'')+
+      '<div style="overflow-x:auto"><table class="sign" style="width:100%;font-size:13px"><tr><th>When (UTC)</th><th>Code</th><th>Endpoint</th><th>Error (internal detail)</th></tr>'+rows+'</table></div>';
+  }catch(_){ hint.textContent="unavailable"; }
+}
+
 async function load(silent){
   const token=getToken();
   if(!token){ location.reload(); return; }
@@ -388,6 +423,7 @@ async function load(silent){
   try{
     const data=await fetchStats(qs);
     lastData=data;
+    loadErrors(); // non-blocking — errors card fills in alongside the stats
     // previous equal-length period for trend arrows (real data)
     let prev=null;
     if(s&&e){
