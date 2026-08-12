@@ -271,6 +271,12 @@
     <div class="section"><span class="em">🫂</span><h2>Activation funnel</h2><span class="hint">signup → paired → talking</span></div>
     <div class="card"><div class="funnel" id="funnel"></div></div>
 
+    <!-- Who's been in the app -->
+    <div class="section"><span class="em">👤</span><h2>Who's been in</h2><span class="hint" id="rosterHint"></span></div>
+    <div class="card" style="overflow-x:auto"><table class="sign" id="rosterTable"></table>
+      <div class="note" style="margin-top:10px">There's no login-event history — this is <b>last seen</b>, the moment each person last opened the app. Green = within a week, amber = within a month, grey = longer.</div>
+    </div>
+
     <!-- Recent signups -->
     <div class="section"><span class="em">🧾</span><h2>Recent signups</h2><span class="hint">human vs bot signals, per signup</span></div>
     <div class="card" style="overflow-x:auto"><table class="sign" id="signupTable"></table>
@@ -321,7 +327,7 @@
       <h3>Notes on the numbers</h3><div id="notes" class="note"></div>
     </div>
   </div>
-  <footer>naata.ai · internal · every figure computed live from the production database · <b>layout v7</b> · data auto-refreshes every 5 min</footer>
+  <footer>naata.ai · internal · every figure computed live from the production database · <b>layout v8</b> · data auto-refreshes every 5 min</footer>
 </div>
 
 <script>
@@ -462,7 +468,7 @@ async function load(silent){
 }
 
 /* ---------- keep the page fresh ---------- */
-const LAYOUT_V=7;
+const LAYOUT_V=8;
 // Live data: re-fetch every 5 minutes while the tab is visible and logged in.
 setInterval(()=>{ if(document.visibilityState==='visible' && getToken() && lastData) load(true); }, 5*60*1000);
 // Page version: check every 10 minutes (and when the tab regains focus) whether
@@ -629,6 +635,7 @@ function render(d,prev){
 
   /* funnel */
   renderFunnel(d.pairing_funnel);
+  renderRoster(d.active_roster);
   renderSignups(d.recent_signups);
   renderReviews(d.reviews);
 
@@ -714,6 +721,26 @@ function renderReviews(rv){
     `<p class="desc" style="margin:6px 0 8px;font-size:13px;color:var(--ink)">"${r.text}"</p>`+
     `<div class="note">— ${r.author}${r.version?` · v${r.version}`:''} · App Store India</div></div>`
   ).join('') || '<div class="card"><div class="note">No written reviews yet.</div></div>';
+}
+
+function renderRoster(r){
+  const t=document.getElementById('rosterTable');
+  const rows=(r&&r.users)||[];
+  if(!rows.length){ t.innerHTML='<tr><td class="note">Nobody has opened the app yet.</td></tr>'; return; }
+  const seen=rows.filter(x=>x.days_ago!=null).length;
+  document.getElementById('rosterHint').textContent=
+    `${seen} have opened the app · ${(r.never_active||0)} never returned after signing up`;
+  const when=x=>{
+    if(x.days_ago==null) return '<span style="color:var(--bad)">never opened</span>';
+    const d=x.days_ago, col=d<=7?'var(--good)':(d<=30?'var(--ochre)':'var(--faint)');
+    const txt=d<1?`${Math.max(1,Math.round(d*24))}h ago`:`${Math.round(d)}d ago`;
+    return `<span style="color:${col};font-weight:650">${txt}</span>`;
+  };
+  t.innerHTML='<tr><th>Last seen</th><th>Name</th><th>Email</th><th>App version</th><th>Paired</th><th>Joined</th></tr>'+
+    rows.map(x=>`<tr><td>${when(x)}</td><td>${x.name}</td><td>${x.email}</td>`+
+      `<td>${x.app_version&&x.app_version!=='unknown'?x.app_version:'<span style="opacity:.4">—</span>'}</td>`+
+      `<td>${x.paired?'<span class="sig">✅</span>':'<span class="sig" style="opacity:.35">—</span>'}</td>`+
+      `<td style="color:var(--muted)">${x.signed_up}</td></tr>`).join('');
 }
 
 function renderSignups(rows){
