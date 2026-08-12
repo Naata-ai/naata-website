@@ -91,6 +91,9 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 .nav-links a{font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;color:rgba(245,237,224,.7);text-decoration:none;letter-spacing:.5px;transition:color .3s}
 .nav.scrolled .nav-links a{color:var(--brown)}
 .nav-links a:hover{color:var(--cream)}
+.nav-links a.nav-dl{padding:8px 18px;border-radius:50px;background:var(--terra);color:var(--cream)!important;font-weight:600}
+.nav-links a.nav-dl:hover{background:#D07A58}
+@media(max-width:760px){.nav-links{gap:14px}.nav-links a:not(.nav-dl){display:none}}
 .nav.scrolled .nav-links a:hover{color:var(--terra)}
 
 /* ===== SECTIONS ===== */
@@ -180,8 +183,11 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 <nav class="nav" id="nav">
   <a href="#" class="nav-logo"><img src="naata-app-icon-small.png" alt="naata"><span>naata.ai</span></a>
   <div class="nav-links">
-    <a href="privacy.html">Privacy</a>
-    <a href="terms.html">Terms</a>
+    <a href="#spaces">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#india">For India</a>
+    <a href="#privacy">Privacy</a>
+    <a href="#waitlist" class="nav-dl">Download</a>
   </div>
 </nav>
 
@@ -239,14 +245,14 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
       </a>
     </div>
 
-    <div class="hero-cta v2-hidden">
+    <div class="hero-cta">
       <button class="btn-secondary" onclick="document.getElementById('spaces').scrollIntoView({behavior:'smooth'})">Learn How It Works</button>
     </div>
   </div>
 </section>
 
-<!-- SECTIONS HIDDEN FOR V1 — remove .v2-hidden style to re-enable -->
-<section class="problem v2-hidden">
+<!-- THE PROBLEM -->
+<section class="problem">
   <div class="section">
     <div class="reveal">
       <div class="section-label" style="color:var(--sand)">The Problem</div>
@@ -263,23 +269,23 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
   </div>
 </section>
 
-<!-- THREE SPACES -->
-<section class="section v2-hidden" id="spaces">
+<!-- THE BRIDGE -->
+<section class="section" id="spaces">
   <div class="reveal">
     <div class="section-label">How It Works</div>
-    <div class="section-title">Three Spaces, One Bond</div>
-    <div class="section-title-hi">तीन जगहें, एक नाता</div>
-    <div class="section-desc">naata.ai gives each partner their own private AI wellness space — and a joint space where the AI bridges both perspectives without revealing private conversations.</div>
+    <div class="section-title">The Bridge</div>
+    <div class="section-title-hi">दो दिलों का पुल</div>
+    <div class="section-desc">One shared space for the two of you — with naata in the room. It stays quiet while you talk, and steps in when the conversation gets stuck.</div>
   </div>
   <div class="spaces-grid reveal">
-    <div class="space-card"><div class="space-icon">💭</div><div class="space-name">Your Private Space</div><div class="space-name-hi">मेरी जगह</div><div class="space-desc">A safe, private space where you talk to the AI about your feelings, frustrations, and hopes. Your partner never sees this. Ever.</div><div class="space-badge">🔒 Completely Private</div></div>
-    <div class="space-card"><div class="space-icon">💭</div><div class="space-name">Partner's Private Space</div><div class="space-name-hi">उनकी जगह</div><div class="space-desc">Your partner has their own equally private space. The AI understands both of you — independently, deeply, without judgement.</div><div class="space-badge">🔒 Equally Private</div></div>
-    <div class="space-card"><div class="space-icon">🌉</div><div class="space-name">The Bridge</div><div class="space-name-hi">दो दिलों का पुल</div><div class="space-desc">A joint session where the AI mediates using understanding from both private spaces — without ever revealing what either partner shared privately.</div><div class="space-badge">✨ AI-Mediated</div></div>
+    <div class="space-card"><div class="space-icon">💬</div><div class="space-name">Talk together</div><div class="space-name-hi">साथ बात करो</div><div class="space-desc">You and your partner share one conversation — on your own phones, in your own words, in Hindi, Hinglish or English. Type it or just speak it.</div><div class="space-badge">🌉 One shared space</div></div>
+    <div class="space-card"><div class="space-icon">🕊️</div><div class="space-name">naata steps in</div><div class="space-name-hi">नाता बीच में आए</div><div class="space-desc">It stays out of the way while you're talking to each other — and speaks when you call it by name, or when the same argument keeps going in circles.</div><div class="space-badge">✨ AI-mediated</div></div>
+    <div class="space-card"><div class="space-icon">🌱</div><div class="space-name">Something shifts</div><div class="space-name-hi">कुछ बदले</div><div class="space-desc">It remembers what matters to you both, notices the patterns you can't see from inside the fight, and gives you something small to try next.</div><div class="space-badge">📈 Grows with you</div></div>
   </div>
 </section>
 
 <!-- FEATURES -->
-<section class="section v2-hidden" id="features" style="background:var(--cream);border-radius:40px;margin:0 16px;max-width:none;padding:100px 40px">
+<section class="section" id="features" style="background:var(--cream);border-radius:40px;margin:0 16px;max-width:none;padding:100px 40px">
   <div style="max-width:1400px;margin:0 auto">
     <div class="reveal">
       <div class="section-label">Features</div>
@@ -300,7 +306,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 </section>
 
 <!-- INDIA -->
-<section class="india v2-hidden" id="india">
+<section class="india" id="india">
   <div class="section" style="padding:0;max-width:1400px;margin:0 auto">
     <div class="reveal">
       <div class="section-label" style="color:rgba(245,237,224,.5)">Rooted in India</div>
@@ -314,24 +320,24 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
       <div class="india-card"><div class="india-card-icon">💰</div><div class="india-card-title">Financial Tensions</div><div class="india-card-desc">EMIs, sending money to parents, career sacrifice — the real financial dynamics of Indian marriages.</div></div>
       <div class="india-card"><div class="india-card-icon">🗣️</div><div class="india-card-title">Real Hindi Emotions</div><div class="india-card-desc">Ghutan, manmutaav, roothna, manaana — emotional words that have no English translation but carry deep meaning.</div></div>
       <div class="india-card"><div class="india-card-icon">💑</div><div class="india-card-title">Arranged + Love Marriages</div><div class="india-card-desc">Different expectations, different challenges, different joys — the AI adapts to your specific journey.</div></div>
-      <div class="india-card"><div class="india-card-icon">₹</div><div class="india-card-title">India-First Pricing</div><div class="india-card-desc">₹299-499/month vs ₹3,000 per professional session. Accessible to every couple who wants to grow together.</div></div>
+      <div class="india-card"><div class="india-card-icon">₹</div><div class="india-card-title">Built for Indian Budgets</div><div class="india-card-desc">Free while we're in early access — and priced for Indian couples after, not converted from dollars.</div></div>
     </div>
   </div>
 </section>
 
 <!-- PRIVACY -->
-<section class="section v2-hidden" id="privacy">
+<section class="section" id="privacy">
   <div class="reveal">
     <div class="section-label">Privacy</div>
     <div class="section-title">Your Words Are Sacred</div>
     <div class="section-title-hi">आपकी बातें सुरक्षित हैं</div>
-    <div class="section-desc">What you share in your private space stays private. Not even your partner can see it. Not even us. This is non-negotiable.</div>
+    <div class="section-desc">Your conversations are encrypted, stored securely in India, and never sold to anyone. What you say in naata stays between you, your partner, and naata.</div>
   </div>
   <div class="privacy-grid reveal">
     <div class="privacy-item"><div class="privacy-icon">🔐</div><div><div class="privacy-title">Strong Encryption</div><div class="privacy-desc">All conversations are encrypted in transit and at rest, protected at the database level, and never sold or shared with advertisers.</div></div></div>
     <div class="privacy-item"><div class="privacy-icon">🚫</div><div><div class="privacy-title">No Data Selling. Ever.</div><div class="privacy-desc">Your data is never sold, shared, or used for advertising. Period.</div></div></div>
-    <div class="privacy-item"><div class="privacy-icon">👁️</div><div><div class="privacy-title">Private Means Private</div><div class="privacy-desc">Your partner cannot see your private conversations. The database itself blocks access — not just the app.</div></div></div>
-    <div class="privacy-item"><div class="privacy-icon">🧠</div><div><div class="privacy-title">Themes, Not Transcripts</div><div class="privacy-desc">Joint sessions use emotional themes only — never raw private content. Synthesis, not sharing.</div></div></div>
+    <div class="privacy-item"><div class="privacy-icon">👥</div><div><div class="privacy-title">Just the Two of You</div><div class="privacy-desc">Your Bridge is shared with your partner and nobody else. Access is enforced at the database level, not just in the app.</div></div></div>
+    <div class="privacy-item"><div class="privacy-icon">🇮🇳</div><div><div class="privacy-title">Stored in India</div><div class="privacy-desc">Your data lives on servers in India — never shipped overseas for processing or storage.</div></div></div>
     <div class="privacy-item"><div class="privacy-icon">🗑️</div><div><div class="privacy-title">Delete Anytime</div><div class="privacy-desc">Your data, your choice. Delete everything with one tap. It's truly gone.</div></div></div>
     <div class="privacy-item"><div class="privacy-icon">🛡️</div><div><div class="privacy-title">Crisis Safety Net</div><div class="privacy-desc">If the AI detects distress, it provides helpline numbers immediately — Kiran (1800-599-0019), iCall (9152987821), Tele-MANAS (14416). Safety always comes first.</div></div></div>
     <div class="privacy-item"><div class="privacy-icon">📋</div><div><div class="privacy-title">DPDP Act Compliant</div><div class="privacy-desc">Built to comply with India's Digital Personal Data Protection Act 2023 from Day 1. Your data stays in India.</div></div></div>
@@ -339,7 +345,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 </section>
 
 <!-- OUR STORY -->
-<section class="section v2-hidden" style="padding-top:60px;padding-bottom:60px">
+<section class="section" style="padding-top:60px;padding-bottom:60px">
   <div class="reveal">
     <div class="section-label">Our Story</div>
     <div class="section-title">We Built This for Us First</div>
@@ -361,7 +367,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 </section>
 
 <!-- SAFETY NOTE -->
-<section class="v2-hidden" style="max-width:800px;margin:0 auto;padding:0 24px 40px;text-align:center">
+<section style="max-width:800px;margin:0 auto;padding:0 24px 40px;text-align:center">
   <div style="padding:20px 24px;border-radius:16px;background:var(--cream);border:1px solid var(--linen)">
     <div style="font-family:'Outfit',sans-serif;font-size:12px;color:var(--warm);line-height:1.7">
       <strong>Safety first:</strong> If you or your partner are experiencing a mental health crisis or domestic violence, please reach out to a helpline — Kiran (1800-599-0019), iCall (9152987821), or Tele-MANAS (14416). Your safety always comes first.
@@ -370,7 +376,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 </section>
 
 <!-- WAITLIST -->
-<section class="section v2-hidden" id="waitlist" style="text-align:center">
+<section class="section" id="waitlist" style="text-align:center">
   <div class="reveal">
     <div class="section-label">Available Now</div>
     <div class="section-title">Start Your naata Journey</div>
@@ -384,12 +390,12 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
     </div>
     <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--deep);margin-bottom:4px">naata is live</div>
     <div style="font-family:'Noto Sans Devanagari',sans-serif;font-size:18px;font-weight:600;color:var(--warm);margin-bottom:24px">नाता अब उपलब्ध है</div>
-    <div style="font-family:'DM Serif Display',serif;font-size:56px;color:var(--terra)">₹299</div>
-    <div style="font-family:'Outfit',sans-serif;font-size:14px;color:var(--warm);margin-bottom:8px">per month, per couple</div>
-    <div style="font-family:'Outfit',sans-serif;font-size:13px;color:var(--sand);margin-bottom:32px">vs ₹3,000 per single professional session</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:56px;color:var(--terra)">Free</div>
+    <div style="font-family:'Outfit',sans-serif;font-size:14px;color:var(--warm);margin-bottom:8px">while naata is in early access</div>
+    <div style="font-family:'Outfit',sans-serif;font-size:13px;color:var(--sand);margin-bottom:32px">Everything below included, for both of you</div>
     <div style="text-align:left;margin-bottom:32px">
-      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> Unlimited private AI wellness sessions</div>
-      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> Unlimited joint Bridge conversations</div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> Unlimited Bridge conversations, day or night</div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> Voice or text — speak naturally, no typing needed</div>
       <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> Hindi / Hinglish / English support</div>
       <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> Emotion tracking + weekly insights</div>
       <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> Research-backed guided exercises</div>
