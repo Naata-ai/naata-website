@@ -78,6 +78,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 @keyframes float{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
+.bridge-divider{height:1px;max-width:1400px;margin:76px auto 66px;background:linear-gradient(90deg,transparent,var(--linen),transparent)}
 .reveal{opacity:0;transform:translateY(32px);transition:all .8s cubic-bezier(.22,1,.36,1)}
 .reveal.visible{opacity:1;transform:translateY(0)}
 
@@ -175,9 +176,8 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
   <a href="#" class="nav-logo"><img src="naata-app-icon-small.png" alt="naata"><span>naata.ai</span></a>
   <div class="nav-links">
     <a href="#spaces">How it works</a>
-    <a href="#features">Features</a>
     <a href="privacy.html">Privacy</a>
-    <a href="#waitlist" class="nav-dl">Download</a>
+    <a href="#get" class="nav-dl">Download</a>
   </div>
 </nav>
 
@@ -203,7 +203,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
     </svg>
     <div class="hero-logo">नाता</div>
     <div class="hero-domain">naata.ai</div>
-    <div class="hero-tagline">An AI that helps couples talk things through</div>
+    <div class="hero-tagline">An AI that helps couples talk — and knows when to stay quiet</div>
 
     <!-- Step label — now INSIDE content, between tagline and launch -->
     <div class="hero-step" id="heroStep">
@@ -220,7 +220,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
     </div>
     </div>
 
-    <div class="store-cta">
+    <div class="store-cta" id="get">
       <a class="store-btn" href="https://apps.apple.com/in/app/naata/id6762250452" target="_blank" rel="noopener">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
         <span><small>Download on the</small>App Store</span>
@@ -238,42 +238,41 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 </section>
 
 <!-- THE BRIDGE -->
-<section class="section" id="spaces">
+<section class="section" id="spaces" style="background:var(--cream);border-radius:40px;margin:0 16px;max-width:none;padding:100px 40px">
+  <div style="max-width:1400px;margin:0 auto">
   <div class="reveal">
     <div class="section-label">How It Works</div>
     <div class="section-title">The Bridge</div>
     <div class="section-title-hi">आप दोनों की साझा जगह</div>
-    <div class="section-desc">One shared space for the two of you — with naata in the room. It stays quiet while you talk, and steps in when the conversation gets stuck.</div>
+    <div class="section-desc">One conversation, both of you in it, naata listening from the side. Most of the time it says nothing at all. That is the point.</div>
   </div>
   <div class="spaces-grid reveal">
-    <div class="space-card"><div class="space-icon">💬</div><div class="space-name">Talk together</div><div class="space-name-hi">साथ बात करो</div><div class="space-desc">You and your partner share one conversation — on your own phones, in your own words, in Hindi, Hinglish or English. Type it or just speak it.</div><div class="space-badge">🌉 One shared space</div></div>
-    <div class="space-card"><div class="space-icon">🕊️</div><div class="space-name">naata steps in</div><div class="space-name-hi">नाता बीच में आए</div><div class="space-desc">It stays out of the way while you're talking to each other — and speaks when you call it by name, or when the same argument keeps going in circles.</div><div class="space-badge">✨ AI-mediated</div></div>
-    <div class="space-card"><div class="space-icon">🌱</div><div class="space-name">It learns your patterns</div><div class="space-name-hi">पैटर्न पहचाने</div><div class="space-desc">It remembers what matters to you both, points out patterns that are hard to see mid-argument, and suggests one small thing to try next.</div><div class="space-badge">📈 Grows with you</div></div>
+    <div class="space-card"><div class="space-icon">💬</div><div class="space-name">You two talk</div><div class="space-name-hi">साथ बात करो</div><div class="space-desc">Same conversation, separate phones, whenever either of you opens it. Write it or say it out loud — in Hindi, Hinglish, English, or all three in one sentence.</div><div class="space-badge">🌉 One shared space</div></div>
+    <div class="space-card"><div class="space-icon">🕊️</div><div class="space-name">naata stays out of it</div><div class="space-name-hi">नाता चुप रहता है</div><div class="space-desc">Say "naata" and it answers. Stay quiet and so does it — unless the two of you have been circling the same point for a while, which is usually when a third voice helps.</div><div class="space-badge">✨ AI-mediated</div></div>
+    <div class="space-card"><div class="space-icon">🌱</div><div class="space-name">Until it is useful</div><div class="space-name-hi">जब ज़रूरत हो</div><div class="space-desc">It carries what you told it last month into tonight, names the pattern you are both too close to see, and suggests one thing to try — not a programme, one thing.</div><div class="space-badge">📈 Grows with you</div></div>
   </div>
-</section>
 
-<!-- FEATURES -->
-<section class="section" id="features" style="background:var(--cream);border-radius:40px;margin:0 16px;max-width:none;padding:100px 40px">
-  <div style="max-width:1400px;margin:0 auto">
-    <div class="reveal">
-      <div class="section-label">Features</div>
-      <div class="section-title">What naata does</div>
+  <div class="bridge-divider reveal"></div>
+
+  <div class="reveal">
+      <div class="section-label">Inside the Bridge</div>
+      <div class="section-title">What it actually does</div>
       <div class="section-title-hi">naata क्या करता है</div>
     </div>
     <div class="features-grid reveal">
-      <div class="feature-card"><div class="feature-icon">🤫</div><div class="feature-name">It knows when to stay quiet</div><div class="feature-desc">Most AI wants the last word. naata doesn't. In the Bridge it says nothing at all while the two of you are talking — it speaks when you call it by name, or when the same argument has clearly been going in circles. The room stays yours.</div></div>
-      <div class="feature-card"><div class="feature-icon">🎙️</div><div class="feature-name">Speak, don't type</div><div class="feature-desc">Say it out loud and naata transcribes it — and it answers in a Hindi voice when you're speaking Hindi. Useful at the end of a long day when a keyboard is the last thing you want.</div></div>
-      <div class="feature-card"><div class="feature-icon">💬</div><div class="feature-name">Hindi, Hinglish, English</div><div class="feature-desc">Switch mid-sentence like everyone actually does. "Mujhe bahut bura laga" lands with the same weight as its English equivalent — not translated, understood.</div></div>
-      <div class="feature-card"><div class="feature-icon">🎭</div><div class="feature-name">Reads tone, not just words</div><div class="feature-desc">It notices when a two-word reply is really frustration, and when a calm sentence is carrying something heavier underneath.</div></div>
-      <div class="feature-card"><div class="feature-icon">🔁</div><div class="feature-name">Spots the loop you're stuck in</div><div class="feature-desc">The same argument in different clothes, every few weeks. naata tracks patterns across your conversations and names them — the thing that's hard to see from inside the fight.</div></div>
-      <div class="feature-card"><div class="feature-icon">🧘</div><div class="feature-name">Something to actually try</div><div class="feature-desc">Appreciation Rounds, Active Listening, Softened Startup — short exercises drawn from established relationship research, offered when they fit rather than as homework.</div></div>
-      <div class="feature-card"><div class="feature-icon">📋</div><div class="feature-name">A weekly read on how you're doing</div><div class="feature-desc">Daily mood check-ins and emotion tracking add up to a weekly summary — what came up, what shifted, what's worth attention.</div></div>
-      <div class="feature-card"><div class="feature-icon">👨‍👩‍👧</div><div class="feature-name">Not only for couples</div><div class="feature-desc">A parent and a grown child, two siblings, close friends. naata adapts its tone to the bond you pick — it never assumes romance where there isn't any.</div></div>
-      <div class="feature-card"><div class="feature-icon">🛟</div><div class="feature-name">It knows when to step back</div><div class="feature-desc">If something said points to real danger, naata stops coaching and surfaces India's crisis helplines — Kiran, iCall, Tele-MANAS. It is not a substitute for professional help, and it says so.</div></div>
+      <div class="feature-card"><div class="feature-icon">🤫</div><div class="feature-name">It knows when to stay quiet</div><div class="feature-desc">Every other AI is desperate to reply. naata is built to hold back — silence is its default, not its failure state. It speaks when you call it by name, and when an argument has clearly stopped moving. Otherwise the room belongs to the two of you.</div></div>
+      <div class="feature-card"><div class="feature-icon">🎙️</div><div class="feature-name">Speak, don't type</div><div class="feature-desc">Say it out loud instead. naata transcribes what you said and answers in a Hindi voice if that is how you spoke. Easier at 11pm than typing out something difficult.</div></div>
+      <div class="feature-card"><div class="feature-icon">💬</div><div class="feature-name">Hindi, Hinglish, English</div><div class="feature-desc">Switch mid-sentence, the way people actually speak. "Mujhe bahut bura laga" is not translated into English and then understood — it lands as it was meant.</div></div>
+      <div class="feature-card"><div class="feature-icon">🎭</div><div class="feature-name">Reads tone, not just words</div><div class="feature-desc">A two-word reply is rarely just two words. naata reads what is sitting under the sentence, not only the sentence.</div></div>
+      <div class="feature-card"><div class="feature-icon">🔁</div><div class="feature-name">Spots the loop you're stuck in</div><div class="feature-desc">Most couples do not have many arguments. They have one or two, wearing different clothes. naata tracks them across weeks and tells you which one you are having tonight.</div></div>
+      <div class="feature-card"><div class="feature-icon">🧘</div><div class="feature-name">Something to actually try</div><div class="feature-desc">Appreciation Rounds, Active Listening, Softened Startup — small, specific things drawn from relationship research. Offered when they fit the moment, never assigned as homework.</div></div>
+      <div class="feature-card"><div class="feature-icon">📋</div><div class="feature-name">A weekly read on how you're doing</div><div class="feature-desc">A daily check-in takes ten seconds. By Sunday they add up to something honest: what came up, what eased, what neither of you has mentioned in a while.</div></div>
+      <div class="feature-card"><div class="feature-icon">👨‍👩‍👧</div><div class="feature-name">Not only for couples</div><div class="feature-desc">A parent and a grown child. Two siblings. Old friends who have drifted. Pick the bond and naata changes how it speaks — it never assumes romance where there is none.</div></div>
+      <div class="feature-card"><div class="feature-icon">🛟</div><div class="feature-name">It knows when to step back</div><div class="feature-desc">If something points to real danger, naata stops trying to help and hands you Kiran, iCall and Tele-MANAS instead. It is not a professional, and it will tell you so rather than pretend.</div></div>
     </div>
   </div>
-  </div>
-</section>
+  </section>
+
 
 <!-- SAFETY NOTE -->
 <section style="max-width:800px;margin:0 auto;padding:0 24px 40px;text-align:center">
@@ -284,54 +283,12 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
   </div>
 </section>
 
-<!-- WAITLIST -->
-<section class="section" id="waitlist" style="text-align:center">
-  <div class="reveal">
-    <div class="section-label">Available Now</div>
-    <div class="section-title">Get naata</div>
-    <div class="section-title-hi">आज ही शुरू करें</div>
-    <div class="section-desc" style="margin:0 auto 16px">Download naata, pair with your partner, and start using the Bridge. It takes about a minute to set up.</div>
-  </div>
-  <div class="waitlist-card reveal">
-    <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:20px;background:rgba(122,139,92,.1);margin-bottom:24px">
-      <span style="width:8px;height:8px;border-radius:50%;background:var(--sage);animation:pulse 2s ease infinite"></span>
-      <span style="font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:var(--sage);letter-spacing:2px">NOW AVAILABLE</span>
-    </div>
-    <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--deep);margin-bottom:4px">naata is live</div>
-    <div style="font-family:'Noto Sans Devanagari',sans-serif;font-size:18px;font-weight:600;color:var(--warm);margin-bottom:24px">नाता अब उपलब्ध है</div>
-                <div style="text-align:left;margin-bottom:32px">
-      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> Unlimited Bridge conversations, day or night</div>
-      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> Voice or text — speak naturally, no typing needed</div>
-      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> Hindi / Hinglish / English support</div>
-      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> Emotion tracking + weekly insights</div>
-      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> Research-backed guided exercises</div>
-      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> Remembers context between conversations</div>
-      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> 24/7 availability — no scheduling</div>
-      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-family:'Outfit',sans-serif;font-size:14px;color:var(--brown)"><span style="color:var(--sage);font-weight:700">✓</span> Encrypted, and never sold to anyone</div>
-    </div>
-    <div style="background:var(--cream);border-radius:16px;padding:24px;margin-bottom:16px">
-      <div style="font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:var(--deep);margin-bottom:14px">Download naata</div>
-      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <a href="https://apps.apple.com/in/app/naata/id6762250452" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:12px;background:var(--deep);color:var(--cream);text-decoration:none;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg> App Store</a>
-        <a href="https://play.google.com/store/apps/details?id=com.naataai.naata" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:12px;background:var(--deep);color:var(--cream);text-decoration:none;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.73c.18.09.38.14.58.14.22 0 .44-.06.64-.18l9.33-5.45-2.54-2.54L3.18 23.73zM1.5 2.01c-.32.37-.5.84-.5 1.36v17.26c0 .52.18.99.5 1.36l.03.03 9.7-9.7v-.64L1.5 2.01zM22.27 10.88l-3.2-1.87-2.86 2.86 2.86 2.86 3.2-1.87c.91-.53.91-1.45 0-1.98zM13.73 11.68L5.27 3.22l-.86-.5 9.33 5.45-2.54 2.54 2.53 2.53z"/></svg> Google Play</a>
-      </div>
-      <div style="font-family:'Outfit',sans-serif;font-size:11px;color:var(--sand);margin-top:10px">Free to start. Pair with your partner in under a minute.</div>
-    </div>
-    <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap">
-      <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px">🔒</span><span style="font-family:'Outfit',sans-serif;font-size:12px;color:var(--warm)">Private & Secure</span></div>
-      <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px">🇮🇳</span><span style="font-family:'Outfit',sans-serif;font-size:12px;color:var(--warm)">Made in India</span></div>
-      
-  </div>
-</section>
-
 <!-- FOOTER -->
 <footer class="footer">
   <svg width="28" height="25" viewBox="0 0 44 40" fill="none" style="margin-bottom:8px"><path d="M22 38 C16 32, 2 22, 2 12 C2 5, 7 0, 13 0 C17 0, 20 2, 22 5 C24 2, 27 0, 31 0 C37 0, 42 5, 42 12 C42 22, 28 32, 22 38Z" fill="#C2714F"/></svg>
   <div class="footer-logo">नाता</div>
   <div class="footer-tagline">naata.ai</div>
-  <div style="font-family:'DM Serif Display',serif;font-size:16px;color:rgba(245,237,224,.25);font-style:italic;margin-bottom:28px">An AI that helps couples talk things through</div>
+  <div style="font-family:'DM Serif Display',serif;font-size:16px;color:rgba(245,237,224,.25);font-style:italic;margin-bottom:28px">An AI that helps couples talk — and knows when to stay quiet</div>
 
   <!-- Social -->
   <div style="display:flex;gap:28px;justify-content:center;margin-bottom:24px;align-items:center">
@@ -353,7 +310,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--deep);over
 
   <!-- Bottom -->
   <div style="margin-top:32px;padding-top:20px;border-top:1px solid rgba(245,237,224,.08)">
-    <div style="font-family:'Outfit',sans-serif;font-size:13px;color:rgba(245,237,224,.25);max-width:540px;margin:0 auto;line-height:1.7">naata.ai is an AI-powered relationship wellness companion designed to strengthen communication and emotional connection between couples.</div>
+    <div style="font-family:'Outfit',sans-serif;font-size:13px;color:rgba(245,237,224,.25);max-width:540px;margin:0 auto;line-height:1.7">naata is a shared space where two people talk, with an AI that helps when the conversation gets stuck — and stays out of it when it does not.</div>
     <div style="font-family:'Outfit',sans-serif;font-size:13px;color:rgba(245,237,224,.2);margin-top:10px">&copy; 2026 naata.ai &mdash; Nivedita &amp; Vishal &mdash; Made in India</div>
   </div>
 </footer>
