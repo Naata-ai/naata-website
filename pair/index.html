@@ -3,185 +3,143 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pair with your partner on Naata</title>
-  <meta name="description" content="Tap to open Naata and pair with your partner.">
-  <!-- App-store previews will show this heart-icon card in WhatsApp/iMessage. -->
-  <meta property="og:title" content="Pair with your partner on Naata">
-  <meta property="og:description" content="Naata connects your relationship spaces. Tap to pair.">
+  <title>Pair on naata</title>
+  <meta name="description" content="Tap to open naata and pair with your partner.">
+  <meta property="og:title" content="You've been invited to naata">
+  <meta property="og:description" content="Someone wants to share a private space with you. Tap to join.">
   <meta property="og:image" content="https://naata.ai/naata-app-icon-small.png">
   <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #F5EDE0;
-      color: #3A2E24;
-      -webkit-font-smoothing: antialiased;
-    }
-    .wrap {
-      max-width: 420px;
-      margin: 0 auto;
-      padding: 40px 24px 24px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-    .logo {
-      width: 84px;
-      height: 84px;
-      border-radius: 20px;
-      overflow: hidden;
-      background: #C2714F;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    .logo img { width: 100%; height: 100%; object-fit: cover; }
-    h1 {
-      font-family: "DM Serif Display", Georgia, serif;
-      font-size: 28px;
-      margin: 8px 0 6px;
-      color: #3A2E24;
-      font-weight: 400;
-    }
-    .sub {
-      font-size: 15px;
-      color: #7A6A5C;
-      margin-bottom: 32px;
-      line-height: 1.5;
-    }
-    .code-box {
-      background: white;
-      border-radius: 14px;
-      padding: 18px 24px;
-      margin-bottom: 28px;
-      box-shadow: 0 2px 12px rgba(58, 46, 36, 0.06);
-      display: none;
-    }
-    .code-box.show { display: block; }
-    .code-label {
-      font-size: 11px;
-      letter-spacing: 2px;
-      color: #B08A6C;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-    .code {
-      font-family: "SF Mono", "Menlo", monospace;
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      color: #3A2E24;
-    }
-    .buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      width: 100%;
-      margin-bottom: 24px;
-    }
-    .btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 16px 20px;
-      border-radius: 14px;
-      text-decoration: none;
-      font-size: 16px;
-      font-weight: 600;
-      transition: transform 0.15s;
-    }
-    .btn:active { transform: scale(0.98); }
-    .btn-primary {
-      background: #C2714F;
-      color: white;
-    }
-    .btn-secondary {
-      background: white;
-      color: #3A2E24;
-      border: 1px solid #E6DCCD;
-    }
-    .note {
-      font-size: 13px;
-      color: #B08A6C;
-      margin-top: 8px;
-      line-height: 1.5;
-    }
-    .footer {
-      margin-top: auto;
-      padding-top: 32px;
-      font-size: 12px;
-      color: #C4B39F;
-    }
-    .footer a { color: #C4B39F; text-decoration: underline; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      background:#F5EDE0;color:#3A2E24;-webkit-font-smoothing:antialiased}
+    .wrap{max-width:420px;margin:0 auto;padding:36px 24px 24px;min-height:100vh;
+      display:flex;flex-direction:column;align-items:center;text-align:center}
+    .logo{width:76px;height:76px;border-radius:19px;overflow:hidden;background:#C2714F;margin-bottom:18px}
+    .logo img{width:100%;height:100%;object-fit:cover}
+    h1{font-family:"DM Serif Display",Georgia,serif;font-size:26px;margin:6px 0;font-weight:400}
+    .sub{font-size:15px;color:#7A6A5C;margin:6px 0 26px;line-height:1.5}
+    /* Code — the thing that always works, so it leads. */
+    .code-box{background:#fff;border-radius:16px;padding:16px 20px;margin-bottom:10px;width:100%;
+      box-shadow:0 2px 12px rgba(58,46,36,.06);display:none}
+    .code-box.show{display:block}
+    .code-label{font-size:10px;letter-spacing:2px;color:#B08A6C;font-weight:700;margin-bottom:6px}
+    .code{font-family:"SF Mono",Menlo,monospace;font-size:26px;font-weight:600;letter-spacing:3px}
+    .copy{margin-top:12px;width:100%;padding:11px;border-radius:11px;border:1px solid #E6DCCD;
+      background:#FBF7F0;color:#3A2E24;font-size:14px;font-weight:600;cursor:pointer}
+    .copy.done{background:#7A8B5C;color:#fff;border-color:#7A8B5C}
+    .buttons{display:flex;flex-direction:column;gap:11px;width:100%;margin:20px 0 4px}
+    .btn{display:flex;align-items:center;justify-content:center;gap:9px;padding:16px 20px;border-radius:14px;
+      text-decoration:none;font-size:16px;font-weight:600;transition:transform .15s}
+    .btn:active{transform:scale(.98)}
+    .btn-primary{background:#C2714F;color:#fff}
+    .btn-secondary{background:#fff;color:#3A2E24;border:1px solid #E6DCCD}
+    .steps{width:100%;margin-top:22px;text-align:left;background:#fff;border:1px solid #EFE6D8;
+      border-radius:16px;padding:16px 18px}
+    .steps h2{font-size:12px;letter-spacing:1.6px;color:#B08A6C;margin:0 0 10px;font-weight:700;text-transform:uppercase}
+    .steps ol{margin:0;padding-left:20px}
+    .steps li{font-size:14px;color:#5C4E42;line-height:1.75}
+    .footer{margin-top:auto;padding-top:28px;font-size:12px;color:#C4B39F}
+    .footer a{color:#C4B39F}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="logo">
-      <img src="/naata-app-icon-small.png" alt="Naata">
-    </div>
-    <h1>You've been invited to Naata</h1>
-    <p class="sub">Your partner wants to share a private relationship space with you.</p>
+    <div class="logo"><img src="/naata-app-icon-small.png" alt="naata"></div>
+    <h1>You've been invited to naata</h1>
+    <p class="sub" id="sub">Someone wants to share a private space with you.</p>
 
     <div class="code-box" id="codeBox">
-      <div class="code-label">YOUR CODE</div>
+      <div class="code-label">YOUR INVITE CODE</div>
       <div class="code" id="codeText">—</div>
+      <button class="copy" id="copyBtn">Copy code</button>
     </div>
 
-    <div class="buttons">
-      <a href="#" class="btn btn-primary" id="openApp">Open Naata</a>
-      <a href="https://apps.apple.com/in/app/naata/id6762250452" class="btn btn-secondary">Download for iPhone</a>
-      <a href="https://play.google.com/store/apps/details?id=com.naataai.naata" class="btn btn-secondary">Download for Android</a>
+    <div class="buttons" id="buttons"></div>
+
+    <div class="steps">
+      <h2>How to join</h2>
+      <ol id="stepList">
+        <li>Install naata using the button above.</li>
+        <li>Open it and sign up with your email.</li>
+        <li>Choose <b>“I have a code”</b> and enter the code above.</li>
+      </ol>
     </div>
 
-    <p class="note" id="hint">
-      If Naata is already installed, tap "Open Naata" above.
-      Otherwise install first, then reopen this link — you'll be paired automatically.
-    </p>
-
-    <div class="footer">
-      <a href="/">naata.ai</a> · Made for couples
-    </div>
+    <div class="footer"><a href="/">naata.ai</a></div>
   </div>
 
   <script>
-    (function() {
-      // Read the invite code from ?code=NAATA-XXXX
-      var params = new URLSearchParams(window.location.search);
-      var code = (params.get('code') || '').trim().toUpperCase();
-      if (code) {
-        document.getElementById('codeText').textContent = code;
-        document.getElementById('codeBox').classList.add('show');
-      }
+  (function(){
+    var IOS_URL = 'https://apps.apple.com/in/app/naata/id6762250452';
+    var AND_URL = 'https://play.google.com/store/apps/details?id=com.naataai.naata';
+    var ua = navigator.userAgent || '';
+    var isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+    var isAndroid = /Android/.test(ua);
 
-      // Wire the "Open Naata" button — deep link with the code preserved.
-      // Universal Links / App Links will intercept this if the OS has verified
-      // the association. Otherwise it falls back to opening in the browser
-      // (which shows this page again — user then taps a store button).
-      var openBtn = document.getElementById('openApp');
-      var deepLink = 'https://naata.ai/pair' + (code ? '?code=' + encodeURIComponent(code) : '');
-      openBtn.setAttribute('href', deepLink);
+    var code = (new URLSearchParams(window.location.search).get('code') || '').trim().toUpperCase();
+    if (code) {
+      document.getElementById('codeText').textContent = code;
+      document.getElementById('codeBox').classList.add('show');
+    } else {
+      // No code in the link — the steps below can't reference one.
+      document.getElementById('stepList').innerHTML =
+        '<li>Install naata using the button above.</li>' +
+        '<li>Open it and sign up with your email.</li>' +
+        '<li>Ask the person who invited you for their invite code.</li>';
+    }
 
-      // On iOS, tapping the same-origin link from within the browser doesn't
-      // always trigger Universal Link handoff. As a courtesy for that case,
-      // also try the custom-scheme fallback on button tap.
-      openBtn.addEventListener('click', function(ev) {
-        if (!code) return; // Nothing to deep-link with
-        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        if (!isIOS) return;
-        // Give iOS ~250ms to decide whether to hand off to the app. If we're
-        // still on this page after ~1.5s, the app almost certainly isn't
-        // installed — the user will see the store buttons.
-        setTimeout(function() {
-          window.location.href = 'naata://pair?code=' + encodeURIComponent(code);
+    // Copy button — the reliable path when deep linking doesn't fire.
+    var copyBtn = document.getElementById('copyBtn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function(){
+        var done = function(){
+          copyBtn.textContent = 'Copied ✓';
+          copyBtn.classList.add('done');
+          setTimeout(function(){ copyBtn.textContent='Copy code'; copyBtn.classList.remove('done'); }, 2200);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(code).then(done, done);
+        } else {
+          var t=document.createElement('textarea'); t.value=code; document.body.appendChild(t);
+          t.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(t); done();
+        }
+      });
+    }
+
+    // Show the ONE store button that matches this phone, first and prominent.
+    // Three equal-weight buttons made the next step ambiguous — most people
+    // arriving here do not have the app yet, so installing must be obvious.
+    var box = document.getElementById('buttons');
+    var storeHref = isIOS ? IOS_URL : (isAndroid ? AND_URL : null);
+    var storeLabel = isIOS ? 'Get naata for iPhone' : 'Get naata for Android';
+    var html = '';
+    if (storeHref) {
+      html += '<a href="'+storeHref+'" class="btn btn-primary">'+storeLabel+'</a>';
+      html += '<a href="#" class="btn btn-secondary" id="openApp">I already have naata</a>';
+    } else {
+      html += '<a href="'+IOS_URL+'" class="btn btn-primary">Download for iPhone</a>';
+      html += '<a href="'+AND_URL+'" class="btn btn-primary">Download for Android</a>';
+      html += '<a href="#" class="btn btn-secondary" id="openApp">I already have naata</a>';
+      document.getElementById('sub').textContent =
+        'Someone wants to share a private space with you. Open this link on your phone to join.';
+    }
+    box.innerHTML = html;
+
+    // "I already have naata" — same-origin link so a verified Universal Link /
+    // App Link hands off to the app. If nothing happens, the page simply stays,
+    // and the code + steps above are the fallback.
+    var openBtn = document.getElementById('openApp');
+    if (openBtn) {
+      var deep = 'https://naata.ai/pair/' + (code ? '?code='+encodeURIComponent(code) : '');
+      openBtn.setAttribute('href', deep);
+      openBtn.addEventListener('click', function(){
+        if (!code) return;
+        setTimeout(function(){
+          window.location.href = 'naata://pair?code='+encodeURIComponent(code);
         }, 250);
       });
-    })();
+    }
+  })();
   </script>
 </body>
 </html>
