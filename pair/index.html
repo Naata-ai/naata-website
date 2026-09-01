@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pair on naata</title>
-  <meta name="description" content="Tap to open naata and pair with your partner.">
+  <meta name="description" content="Join your partner on naata — one shared conversation, in Hindi, Hinglish or English.">
   <meta property="og:title" content="You've been invited to naata">
-  <meta property="og:description" content="Someone wants to share a private space with you. Tap to join.">
-  <meta property="og:image" content="https://naata.ai/naata-app-icon-small.png">
+  <meta property="og:description" content="A shared space for the two of you to talk things through — with an AI that helps when a conversation gets stuck.">
+  <meta property="og:image" content="https://naata.ai/naata-app-icon.png">
+  <meta name="twitter:card" content="summary">
   <style>
     *{box-sizing:border-box}
     body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
@@ -40,13 +41,34 @@
     .steps li{font-size:14px;color:#5C4E42;line-height:1.75}
     .footer{margin-top:auto;padding-top:28px;font-size:12px;color:#C4B39F}
     .footer a{color:#C4B39F}
-  </style>
+    .inviter{display:none;align-items:center;justify-content:center;gap:10px;margin:0 0 14px}
+  .inviter.show{display:flex}
+  .inviter img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #E8D5B7}
+  .inviter .who{font-family:'Outfit',sans-serif;font-size:15px;color:#6B4F36}
+  .inviter .who b{color:#3B2F1E}
+  .whatis{margin:18px auto 4px;max-width:430px;padding:16px 18px;border-radius:14px;
+    background:#FAF6F0;border:1px solid #E8D5B7}
+  .whatis p{font-family:'Outfit',sans-serif;font-size:14px;line-height:1.65;color:#6B4F36;margin:0}
+  .notice{display:none;margin:16px auto 0;max-width:430px;padding:14px 16px;border-radius:14px;
+    font-family:'Outfit',sans-serif;font-size:14px;line-height:1.6}
+  .notice.show{display:block}
+  .notice.warn{background:#FBF0E8;border:1px solid #E5C4AE;color:#8A4B2A}
+</style>
 </head>
 <body>
   <div class="wrap">
     <div class="logo"><img src="/naata-app-icon-small.png" alt="naata"></div>
-    <h1>You've been invited to naata</h1>
-    <p class="sub" id="sub">Someone wants to share a private space with you.</p>
+    <div id="inviter" class="inviter"></div>
+    <h1 id="headline">You've been invited to naata</h1>
+    <p class="sub" id="sub">A shared space for the two of you to talk things through.</p>
+
+    <div class="whatis" id="whatis">
+      <p><b>naata</b> is one conversation the two of you share — on your own phones,
+      in Hindi, Hinglish or English. An AI sits in it quietly, stays out of the way while
+      you talk, and helps when a conversation gets stuck.</p>
+    </div>
+
+    <div class="notice" id="notice"></div>
 
     <div class="code-box" id="codeBox">
       <div class="code-label">YOUR INVITE CODE</div>
@@ -88,6 +110,38 @@
         '<li>Ask the person who invited you for their invite code.</li>';
     }
 
+    // Who is actually inviting them. "Someone wants to share a space" converts
+    // badly — a name and a face is the difference between a stranger's link and
+    // your partner's. Public endpoint, no auth, does not redeem the code.
+    if (code) {
+      fetch('https://naata-backend-483381158187.asia-south1.run.app/api/couples/preview', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({invite_code: code})
+      }).then(function(r){
+        return r.json().then(function(j){ return {ok: r.ok, status: r.status, body: j}; });
+      }).then(function(res){
+        var box = document.getElementById('inviter');
+        var notice = document.getElementById('notice');
+        if (res.ok && res.body && res.body.inviter_name) {
+          var nm = String(res.body.inviter_name).slice(0, 40);
+          var av = res.body.inviter_avatar_url;
+          document.getElementById('headline').textContent = nm + ' invited you to naata';
+          document.getElementById('sub').textContent =
+            'A shared space for the two of you to talk things through.';
+          box.innerHTML = (av ? '<img src="'+av+'" alt="">' : '') +
+            '<span class="who"><b>' + nm + '</b> is waiting for you</span>';
+          box.classList.add('show');
+        } else if (res.status === 409) {
+          notice.className = 'notice warn show';
+          notice.textContent = 'This invite has already been used. Ask them to send you a fresh link from naata.';
+        } else if (res.status === 404) {
+          notice.className = 'notice warn show';
+          notice.textContent = 'This invite link has expired — codes last 7 days. Ask them to tap "Invite partner" in naata and send you a new one. You can still install the app below.';
+        }
+      }).catch(function(){ /* offline or blocked — the code + steps still work */ });
+    }
+
     // Copy button — the reliable path when deep linking doesn't fire.
     var copyBtn = document.getElementById('copyBtn');
     if (copyBtn) {
@@ -121,7 +175,7 @@
       html += '<a href="'+AND_URL+'" class="btn btn-primary">Download for Android</a>';
       html += '<a href="#" class="btn btn-secondary" id="openApp">I already have naata</a>';
       document.getElementById('sub').textContent =
-        'Someone wants to share a private space with you. Open this link on your phone to join.';
+        'Open this link on your phone to join.';
     }
     box.innerHTML = html;
 
